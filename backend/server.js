@@ -8,7 +8,7 @@ const prometheusApiUrl = process.env.PROMETHEUS_API_URL;
 
 app.get('/metrics', async (req, res) => {
   try {
-    const response = await axios.get(`${prometheusApiUrl}/api/v1/query?query=up`);
+    const response = await axios.get(`${prometheusApiUrl}`);
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching metrics' });
@@ -16,5 +16,5 @@ app.get('/metrics', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port} => 🌎`);
 });
