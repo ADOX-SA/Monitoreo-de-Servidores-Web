@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ContainerCard from './ContainerCard'; // Asegúrate de la ruta correcta
+import ContainerCard from './ContainerCard';
+import styles from './conteinerCard.module.css';
 
 type Port = {
   IP: string;
@@ -10,14 +11,47 @@ type Port = {
   Type: string;
 };
 
+type NetworkIO = {
+  rx_bytes: number;
+  rx_packets: number;
+  rx_errors: number;
+  rx_dropped: number;
+  tx_bytes: number;
+  tx_packets: number;
+  tx_errors: number;
+  tx_dropped: number;
+};
+
+type Metrics = {
+  cpuUsage: number;
+  memoryUsage: number;
+  memoryLimit: number;
+  memoryPercentage: number;
+  networkIO: {
+    eth0: NetworkIO;
+  };
+  blockIO: {
+    io_service_bytes_recursive: any[];
+    io_serviced_recursive: any[];
+    io_queue_recursive: any[];
+    io_service_time_recursive: any[];
+    io_wait_time_recursive: any[];
+    io_merged_recursive: any[];
+    io_time_recursive: any[];
+    sectors_recursive: any[];
+  };
+};
+
 type Container = {
   id: string;
   name: string;
   image: string;
   status: string;
   ports: Port[];
+  metrics: Metrics; 
 };
 
+// Componente Dashboard permanece igual
 const Dashboard = () => {
   const [containers, setContainers] = useState<Container[]>([]);
 
@@ -39,16 +73,7 @@ const Dashboard = () => {
         <ContainerCard key={container.id} container={container} />
       ))}
     </div>
-  );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    padding: '16px',
-  },
+  );  
 };
 
 export default Dashboard;
