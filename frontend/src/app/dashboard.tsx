@@ -25,21 +25,10 @@ type NetworkIO = {
 type Metrics = {
   cpuUsage: number;
   memoryUsage: number;
-  memoryLimit: number;
-  memoryPercentage: number;
-  networkIO: {
-    eth0: NetworkIO;
-  };
-  blockIO: {
-    io_service_bytes_recursive: any[];
-    io_serviced_recursive: any[];
-    io_queue_recursive: any[];
-    io_service_time_recursive: any[];
-    io_wait_time_recursive: any[];
-    io_merged_recursive: any[];
-    io_time_recursive: any[];
-    sectors_recursive: any[];
-  };
+  diskUsage: number;
+  networkIn: number;
+  networkOut: number;
+  uptime: number;
 };
 
 type Container = {
@@ -48,23 +37,51 @@ type Container = {
   image: string;
   status: string;
   ports: Port[];
-  metrics: Metrics; 
+  metrics: Metrics;
 };
 
-// Componente Dashboard permanece igual
 const Dashboard = () => {
   const [containers, setContainers] = useState<Container[]>([]);
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const response = await axios.get('http://localhost:5000/api/containers/all');
-        setContainers(response.data); // Ajusta según la estructura de tu respuesta
+        const response = await axios.get('http://localhost:5000/api/metrics/');
+        const data = response.data;
+
+        // Transformar los datos recibidos al formato esperado por el frontend
+        const transformedData = data.uptime.map((uptimeEntry: any) => {
+          const cpu = parseFloat(data.cpu[0].value[1]);
+          const memoryUsage = parseFloat(data.memory[0].value[1]);
+          const diskUsage = parseFloat(data.disk[0].value[1]);
+          const networkIn = parseFloat(data.networkIn[0].value[1]);
+          const networkOut = parseFloat(data.networkOut[0].value[1]);
+
+          return {
+            id: uptimeEntry.metric.id,
+            name: uptimeEntry.metric.name,
+            image: uptimeEntry.metric.image,
+            status: "running", // Puedes actualizar esto según los datos reales si lo tienes
+            ports: [], // Suponiendo que tienes que agregar los puertos por separado
+            metrics: {
+              cpuUsage: cpu,
+              memoryUsage: memoryUsage,
+              diskUsage: diskUsage,
+              networkIn: networkIn,
+              networkOut: networkOut,
+              uptime: parseFloat(uptimeEntry.value[1]),
+            },
+          };
+        });
+
+        setContainers(transformedData);
       } catch (error) {
         console.error("Error fetching containers:", error);
       }
     };
     fetchData();
+    const intervalId = setInterval(fetchData, 5000);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -73,7 +90,7 @@ const Dashboard = () => {
         <ContainerCard key={container.id} container={container} />
       ))}
     </div>
-  );  
+  );
 };
 
 export default Dashboard;

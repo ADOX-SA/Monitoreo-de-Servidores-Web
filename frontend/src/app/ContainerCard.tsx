@@ -11,8 +11,10 @@ type Port = {
 type Metrics = {
   cpuUsage: number;
   memoryUsage: number;
-  memoryLimit: number;
-  memoryPercentage: number;
+  diskUsage: number;
+  networkIn: number;
+  networkOut: number;
+  uptime: number;
 };
 
 type Container = {
@@ -34,10 +36,12 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ container }) => {
       <div className={styles.image}>{container.name}</div>
       <p>Status: {container.status}</p>
       <p>Image: {container.image}</p>
-      <p>CPU Usage: {container.metrics.cpuUsage / 1e6} %</p>
+      <p>CPU Usage: {container.metrics.cpuUsage.toFixed(2)}%</p>
       <p>Memory Usage: {(container.metrics.memoryUsage / 1e6).toFixed(2)} MB</p>
-      <p>Memory Limit: {(container.metrics.memoryLimit / 1e6).toFixed(2)} MB</p>
-      <p>Memory Percentage: {container.metrics.memoryPercentage.toFixed(2)}%</p>
+      <p>Disk Usage: {(container.metrics.diskUsage / 1e6).toFixed(2)} MB</p>
+      <p>Network In: {(container.metrics.networkIn / 1e6).toFixed(2)} MB</p>
+      <p>Network Out: {(container.metrics.networkOut / 1e6).toFixed(2)} MB</p>
+      <p>Uptime: {(container.metrics.uptime / 3600).toFixed(2)} hours</p>
       <div>
         <h4>Ports:</h4>
         <ul>

@@ -1,48 +1,31 @@
+import axios from 'axios';
 import { Request, Response } from 'express';
-const Docker = require('dockerode');
-// Conéctate a Docker usando TCP
-const docker = new Docker({
-  host: process.env.DOCKER_HOST,
-  port: Number(process.env.DOCKER_PORT),
-});
-
-// TODO: Se repite esta funcion
-const getContainerStats = async (containerId: string) => {
-    try {
-      const container = docker.getContainer(containerId);
-      const stats = await container.stats({ stream: false });
-      return {
-        cpuUsage: stats.cpu_stats.cpu_usage.total_usage,
-        memoryUsage: stats.memory_stats.usage,
-        memoryLimit: stats.memory_stats.limit,
-        memoryPercentage: (stats.memory_stats.usage / stats.memory_stats.limit) * 100,
-        networkIO: stats.networks,
-        blockIO: stats.blkio_stats,
-      };
-    } catch (error) {
-      console.error("Error fetching container stats:", error);
-      return null;
-    }
-  };
 
 export const metrics = async (req: Request, res: Response) => {
-  try {
-    const containers = await docker.listContainers();
-    const metricsData = await Promise.all(containers.map(async (container: any) => {
-      const metrics = await getContainerStats(container.Id);
-      return `
-        # HELP container_memory_usage_bytes Memory usage in bytes
-        container_memory_usage_bytes{container="${container.Names[0]}"} ${metrics?.memoryUsage}
-        # HELP container_cpu_usage_seconds_total CPU usage in seconds
-        container_cpu_usage_seconds_total{container="${container.Names[0]}"} ${metrics?.cpuUsage}
-      `;
-    }));
+    try {
+        const queries = {
+            cpu: 'sum(rate(container_cpu_usage_seconds_total[5m])) by (instance)',
+            memory: 'sum(container_memory_usage_bytes) by (instance)',
+            disk: 'sum(container_fs_usage_bytes) by (instance)',
+            networkIn: 'sum(rate(container_network_receive_bytes_total[5m])) by (instance)',
+            networkOut: 'sum(rate(container_network_transmit_bytes_total[5m])) by (instance)',
+            containersStatus: 'container_last_seen{container_label_com_docker_swarm_task_state="running"}',
+            uptime: 'time() - container_start_time_seconds'
+        };
 
-    res.set('Content-Type', 'text/plain');
-    res.send(metricsData.join('\n'));
-  } catch (error) {
-    console.error("Error fetching container metrics:", error);
-    res.status(500).send('Error fetching metrics');
-  }
+        const metrics = await Promise.all(Object.entries(queries).map(async ([key, query]) => {
+            const response = await axios.get('http://localhost:3000/api/datasources/proxy/1/api/v1/query', {
+                params: { query },
+                headers: {
+                    'Authorization': `Bearer ${process.env.GRAFANA_API_KEY}`
+                }
+            });
+            return { [key]: response.data.data.result };
+        }));
+
+        res.json(Object.assign({}, ...metrics));
+    } catch (error) {
+        console.error('Error fetching data from Grafana:', error);
+        res.status(500).json({ error: 'Error fetching data from Grafana' });
+    }
 };
-
