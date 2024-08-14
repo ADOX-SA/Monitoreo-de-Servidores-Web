@@ -13,8 +13,14 @@ export const images = async (req: Request, res: Response) => {
         id: container.Id,
         name: container.Names[0],
         image: container.Image,
+        imageId: container.ImageID,
+        created: container.Created,
         status: container.Status,
+        state: container.State,
+        labels: container.Labels,
         ports: container.Ports,
+        mounts: container.Mounts,
+        networkSettings: container.NetworkSettings,
       }));
       res.json(formattedContainers);
     } catch (error) {
