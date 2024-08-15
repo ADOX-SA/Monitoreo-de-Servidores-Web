@@ -36,7 +36,7 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ container }) => {
       <div className={styles.image}>{container.name}</div>
       <p>Status: {container.status}</p>
       <p>Image: {container.image}</p>
-      <p>CPU Usage: {container.metrics.cpuUsage.toFixed(2)}%</p>
+      <p>CPU Usage: {container.metrics.cpuUsage.toFixed(2)}%</p> 
       <p>Memory Usage: {(container.metrics.memoryUsage / 1e6).toFixed(2)} MB</p>
       <p>Disk Usage: {(container.metrics.diskUsage / 1e6).toFixed(2)} MB</p>
       <p>Network In: {(container.metrics.networkIn / 1e6).toFixed(2)} MB</p>

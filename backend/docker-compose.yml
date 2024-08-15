@@ -54,7 +54,7 @@ services:  # Sección donde se definen los servicios que se ejecutarán en conte
     image: gcr.io/cadvisor/cadvisor:latest  # Especifica la imagen de Docker a usar (última versión de cAdvisor).
     container_name: cadvisor  # Asigna un nombre específico al contenedor.
     restart: unless-stopped  # Reinicia el contenedor automáticamente a menos que se detenga manualmente.
-    expose:  # Expone un puerto del contenedor para uso interno en la red de Docker.
+    ports:  # Expone un puerto del contenedor para uso interno en la red de Docker.
       - 8080  # Expone el puerto 8080 para ser accesible a otros contenedores.
     volumes:  # Especifica los volúmenes a montar en el contenedor.
       - /:/rootfs:ro  # Monta el sistema de archivos del host en /rootfs dentro del contenedor en modo solo lectura.

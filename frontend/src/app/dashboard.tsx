@@ -68,8 +68,7 @@ const Dashboard = () => {
               memoryUsage: memoryUsage,
               diskUsage: diskUsage,
               networkIn: networkIn,
-              networkOut: networkOut,
-              uptime: parseFloat(uptimeEntry.value[1]),
+              networkOut: networkOut
             },
           };
         });
