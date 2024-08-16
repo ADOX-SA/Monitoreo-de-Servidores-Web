@@ -3,7 +3,6 @@ import { execSync } from 'child_process';
 
 const PROMETHEUS_URL = process.env.PROMETHEUS_URL || 'http://localhost:9090';
 
-// Definir el tipo para los datos de métricas
 interface MetricData {
     metric: {
         name: string;
@@ -11,14 +10,12 @@ interface MetricData {
     value: [number, string];
 }
 
-// Definir el tipo para el registro de contenedores
 interface ContainerRegistry {
     [key: string]: {
         state: string;
     };
 }
 
-// Definir el tipo para los registros de métricas
 interface Metric {
     name: string;
     state: string;
@@ -28,12 +25,10 @@ interface Metric {
     networkTransmit: string;
 }
 
-// Simulación de un registro de contenedores
 let containerRegistry: ContainerRegistry = {};
 
 export const getContainerMetrics = async () => {
     try {
-        // Obtener el estado de los contenedores usando docker ps -a
         updateContainerRegistryFromDocker();
 
         const queries = [
@@ -60,7 +55,6 @@ export const getContainerMetrics = async () => {
             networkTransmit: results[4].data.data.result as MetricData[]
         };
 
-        // Procesar las métricas
         const containers = processContainerMetrics(metrics, containerRegistry);
 
         // Eliminar duplicados de los contenedores
@@ -122,7 +116,7 @@ export const processContainerMetrics = (metrics: any, containerRegistry: any) =>
     });
 
     // Agregar contenedores que están en el registro pero no reportaron métricas
-    Object.keys(containerRegistry).forEach((containerName: string) => {
+    Object.keys(containerRegistry).forEach((containerName: string) => {  
         const metric = processedMetrics.find((container: any) => container.name === containerName);
 
         if (!metric) {
