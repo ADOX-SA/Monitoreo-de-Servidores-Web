@@ -106,7 +106,7 @@ export const processContainerMetrics = (metrics: any, containerRegistry: any) =>
         const containerName = metric.metric.name;
 
         if (!containerName) {
-            //TODO: Si no tiene el nombre, no se pushea..
+            // TODO: Si no tiene nombre, no lo agrega cuando se hace el push..
             //console.warn('Missing container name in metrics data');
             return;
         }
