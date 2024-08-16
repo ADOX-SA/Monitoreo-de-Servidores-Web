@@ -1,57 +1,40 @@
 import React from 'react';
 import styles from './conteinerCard.module.css';
 
-type Port = {
-  IP: string;
-  PrivatePort: number;
-  PublicPort: number;
-  Type: string;
-};
-
-type Metrics = {
-  cpuUsage: number;
-  memoryUsage: number;
-  diskUsage: number;
-  networkIn: number;
-  networkOut: number;
-  uptime: number;
-};
-
+// Tipo para el contenedor
 type Container = {
-  id: string;
   name: string;
-  image: string;
-  status: string;
-  ports: Port[];
-  metrics: Metrics;
+  state: string;
+  cpu: string; // Cambiado a string para manejar "N/A"
+  memory: string; // Cambiado a string para manejar "N/A"
+  networkReceive: string; // Cambiado a string para manejar "N/A"
+  networkTransmit: string; // Cambiado a string para manejar "N/A"
 };
 
 type ContainerCardProps = {
   container: Container;
 };
 
+// Función para convertir el valor a número y manejar casos de "N/A"
+const formatValue = (value: string): number | string => {
+  const parsedValue = parseFloat(value);
+  return isNaN(parsedValue) ? 'N/A' : parsedValue;
+};
+
 const ContainerCard: React.FC<ContainerCardProps> = ({ container }) => {
+  const cpu = formatValue(container.cpu);
+  const memory = formatValue(container.memory);
+  const networkReceive = formatValue(container.networkReceive);
+  const networkTransmit = formatValue(container.networkTransmit);
+
   return (
     <div className={styles.card}>
-      <div className={styles.image}>{container.name}</div>
-      <p>Status: {container.status}</p>
-      <p>Image: {container.image}</p>
-      <p>CPU Usage: {container.metrics.cpuUsage.toFixed(2)}%</p> 
-      <p>Memory Usage: {(container.metrics.memoryUsage / 1e6).toFixed(2)} MB</p>
-      <p>Disk Usage: {(container.metrics.diskUsage / 1e6).toFixed(2)} MB</p>
-      <p>Network In: {(container.metrics.networkIn / 1e6).toFixed(2)} MB</p>
-      <p>Network Out: {(container.metrics.networkOut / 1e6).toFixed(2)} MB</p>
-      <p>Uptime: {(container.metrics.uptime / 3600).toFixed(2)} hours</p>
-      <div>
-        <h4>Ports:</h4>
-        <ul>
-          {container.ports.map((port, index) => (
-            <li key={index}>
-              {port.PublicPort} (Private: {port.PrivatePort})
-            </li>
-          ))}
-        </ul>
-      </div>
+      <div className={styles.name}>{container.name}</div>
+      <p>Status: {container.state}</p>
+      {cpu !== 'N/A' && <p>CPU Usage: {(cpu as number).toFixed(2)}%</p>}
+      {memory !== 'N/A' && <p>Memory Usage: {(memory as number / 1e6).toFixed(2)} MB</p>}
+      {networkReceive !== 'N/A' && <p>Network Receive: {(networkReceive as number / 1e6).toFixed(2)} MB</p>}
+      {networkTransmit !== 'N/A' && <p>Network Transmit: {(networkTransmit as number / 1e6).toFixed(2)} MB</p>}
     </div>
   );
 };
