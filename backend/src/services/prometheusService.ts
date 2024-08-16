@@ -86,18 +86,6 @@ const updateContainerRegistryFromDocker = () => {
     });
 };
 
-// Actualiza el registro de contenedores con las métricas actuales
-const updateContainerRegistry = (metrics: any) => {
-    const currentContainers: Set<string> = new Set(metrics.states.map((state: MetricData) => state.metric.name));
-
-    // Marca los contenedores que están en el registro pero no reportaron métricas como 'stopped'
-    for (const name in containerRegistry) {
-        if (!currentContainers.has(name)) {
-            containerRegistry[name].state = 'stopped';
-        }
-    }
-};
-
 // Elimina entradas repetidas en los datos de métricas
 const removeDuplicates = (metrics: Metric[]): Metric[] => {
     const uniqueMetrics: { [key: string]: Metric } = {};
