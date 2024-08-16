@@ -24,14 +24,7 @@ const Dashboard = () => {
 
         // Transformar los datos recibidos al formato esperado por el frontend
         const transformedData = data
-          .filter((container: any) =>
-            container.name &&
-            container.state &&
-            container.cpu &&
-            container.memory &&
-            container.networkReceive &&
-            container.networkTransmit
-          )
+          .filter((container: any) => container.name && container.cpu && container.memory && container.networkReceive && container.networkTransmit)
           .map((container: any) => ({
             name: container.name,
             state: container.state,
