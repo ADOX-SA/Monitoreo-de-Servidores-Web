@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ContainerCard from './ContainerCard';
-import styles from './conteinerCard.module.css';
+import { ContainerCard } from './Components/Card';
+import styles from './Dashboard.module.css';
 
 type Container = {
   name: string;

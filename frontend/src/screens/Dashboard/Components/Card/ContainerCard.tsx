@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import styles from './conteinerCard.module.css';
+import styles from './ContainerCard.module.css';
 
 // Tipo para el contenedor
 type Container = {
