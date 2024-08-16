@@ -21,3 +21,6 @@ scrape_configs:  # Sección donde se configuran los trabajos de recolección de 
     #metrics_path: '/metrics'  # (Opcional) Especifica la ruta de métricas a recolectar; está comentada.
     #metrics_path: '/prometheus'  # (Opcional) Especifica otra ruta de métricas a recolectar; también está comentada.
 
+   - job_name: 'app_examplev2'  # Define un trabajo llamado 'app_example'.
+    static_configs:  # Configuración estática para los objetivos de recolección.
+    - targets: ['app_examplev2:8070']  # Especifica el objetivo a recolectar, que es el servicio de ejemplo en el puerto 8080.

@@ -68,3 +68,10 @@ services:  # Sección donde se definen los servicios que se ejecutarán en conte
     restart: unless-stopped  # Reinicia el contenedor automáticamente a menos que se detenga manualmente.
     ports:  # Mapea puertos del contenedor a puertos del host.
       - 80:8080  # Expone el puerto 8080 del contenedor en el puerto 80 del host.
+
+  app_examplev2:  # Define un servicio de ejemplo que utiliza una aplicación de Prometheus.
+    image: quay.io/brancz/prometheus-example-app:v0.3.0  # Especifica la imagen de Docker a usar (versión 0.3.0 de la aplicación de ejemplo).
+    container_name: app_examplev2  # Asigna un nombre específico al contenedor.
+    restart: unless-stopped  # Reinicia el contenedor automáticamente a menos que se detenga manualmente.
+    ports:  # Mapea puertos del contenedor a puertos del host.
+      - 90:8070  # Expone el puerto 8080 del contenedor en el puerto 80 del host.
