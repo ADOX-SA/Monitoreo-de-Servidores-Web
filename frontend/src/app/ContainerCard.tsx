@@ -29,12 +29,12 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ container }) => {
 
   return (
     <div className={styles.card}>
-      <div className={styles.name}>{container.name}</div>
-      <p>Status: {container.state}</p>
-      {cpu !== 'N/A' && <p>CPU Usage: {(cpu as number).toFixed(2)}%</p>}
-      {memory !== 'N/A' && <p>Memory Usage: {(memory as number / 1e6).toFixed(2)} MB</p>}
-      {networkReceive !== 'N/A' && <p>Network Receive: {(networkReceive as number / 1e6).toFixed(2)} MB</p>}
-      {networkTransmit !== 'N/A' && <p>Network Transmit: {(networkTransmit as number / 1e6).toFixed(2)} MB</p>}
+      <div className={styles.name}>Nombre: {container.name}</div>
+      <p>Estado: {container.state}</p>
+      {cpu !== 'N/A' && <p>CPU: {(cpu as number).toFixed(2)}%</p>}
+      {memory !== 'N/A' && <p>Memoria: {(memory as number / 1e6).toFixed(2)} MB</p>}
+      {networkReceive !== 'N/A' && <p>Recepción de red: {(networkReceive as number / 1e6).toFixed(2)} MB</p>}
+      {networkTransmit !== 'N/A' && <p>Transmisión de red: {(networkTransmit as number / 1e6).toFixed(2)} MB</p>}
     </div>
   );
 };
