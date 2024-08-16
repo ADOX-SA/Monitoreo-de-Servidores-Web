@@ -3,7 +3,6 @@
     flex-wrap: wrap;
     justify-content: center; /* Centrar horizontalmente */
     align-items: center; /* Centrar verticalmente */
-    min-height: 100vh; 
     padding: 1rem;
   }
   
