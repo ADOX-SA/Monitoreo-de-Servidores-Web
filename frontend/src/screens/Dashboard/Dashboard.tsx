@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ContainerCard } from './Components/Card';
+import { Card } from './Components/Card';
 import styles from './Dashboard.module.css';
 
 type Container = {
@@ -47,7 +47,7 @@ const Dashboard = () => {
   return (
     <div className={styles.container}>
       {containers.map((container, index) => (
-        <ContainerCard key={index} container={container} />
+        <Card key={index} container={container} />
       ))}
     </div>
   );
