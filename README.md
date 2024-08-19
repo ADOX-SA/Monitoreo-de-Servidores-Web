@@ -2,7 +2,7 @@
 
 En esta arquitectura, cAdvisor obtiene la información de los contenedores del servidor 1, como se muestra en la imagen. Esta información es proporcionada a Prometheus. Desde el backend, realizamos consultas a Prometheus para obtener la información necesaria sobre el estado de los servidores, verificando si están activos o caídos. Esta información se refleja en el frontend para su visualización.
 
-![image](https://github.com/user-attachments/assets/994500cb-6bd8-4477-950a-ef738d571bf6)
+![image](image.png)
 
 ## Comandos del proyecto Back-end/Front-end:
 
