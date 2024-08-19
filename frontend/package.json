@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@adoxdesarrollos/designsystem-2": "^0.7.2",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^5.16.7",

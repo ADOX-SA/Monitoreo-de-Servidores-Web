@@ -3,7 +3,6 @@ import { execSync } from 'child_process';
 
 const PROMETHEUS_URL = process.env.PROMETHEUS_URL || 'http://localhost:9090';
 
-// Definir el tipo para los datos de métricas
 interface MetricData {
     metric: {
         name: string;
@@ -11,14 +10,12 @@ interface MetricData {
     value: [number, string];
 }
 
-// Definir el tipo para el registro de contenedores
 interface ContainerRegistry {
     [key: string]: {
         state: string;
     };
 }
 
-// Definir el tipo para los registros de métricas
 interface Metric {
     name: string;
     state: string;
@@ -28,12 +25,10 @@ interface Metric {
     networkTransmit: string;
 }
 
-// Simulación de un registro de contenedores
 let containerRegistry: ContainerRegistry = {};
 
 export const getContainerMetrics = async () => {
     try {
-        // Obtener el estado de los contenedores usando docker ps -a
         updateContainerRegistryFromDocker();
 
         const queries = [
@@ -60,7 +55,6 @@ export const getContainerMetrics = async () => {
             networkTransmit: results[4].data.data.result as MetricData[]
         };
 
-        // Procesar las métricas
         const containers = processContainerMetrics(metrics, containerRegistry);
 
         // Eliminar duplicados de los contenedores
@@ -86,18 +80,6 @@ const updateContainerRegistryFromDocker = () => {
     });
 };
 
-// Actualiza el registro de contenedores con las métricas actuales
-const updateContainerRegistry = (metrics: any) => {
-    const currentContainers: Set<string> = new Set(metrics.states.map((state: MetricData) => state.metric.name));
-
-    // Marca los contenedores que están en el registro pero no reportaron métricas como 'stopped'
-    for (const name in containerRegistry) {
-        if (!currentContainers.has(name)) {
-            containerRegistry[name].state = 'stopped';
-        }
-    }
-};
-
 // Elimina entradas repetidas en los datos de métricas
 const removeDuplicates = (metrics: Metric[]): Metric[] => {
     const uniqueMetrics: { [key: string]: Metric } = {};
@@ -118,7 +100,7 @@ export const processContainerMetrics = (metrics: any, containerRegistry: any) =>
         const containerName = metric.metric.name;
 
         if (!containerName) {
-            //TODO: Si no tiene el nombre, no se pushea..
+            // TODO: Si no tiene nombre, no lo agrega cuando se hace el push..
             //console.warn('Missing container name in metrics data');
             return;
         }
@@ -134,7 +116,7 @@ export const processContainerMetrics = (metrics: any, containerRegistry: any) =>
     });
 
     // Agregar contenedores que están en el registro pero no reportaron métricas
-    Object.keys(containerRegistry).forEach((containerName: string) => {
+    Object.keys(containerRegistry).forEach((containerName: string) => {  
         const metric = processedMetrics.find((container: any) => container.name === containerName);
 
         if (!metric) {

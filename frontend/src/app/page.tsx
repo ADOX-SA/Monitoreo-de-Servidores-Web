@@ -1,9 +1,9 @@
-import Dashboard from "./dashboard";
+import { Initiation } from "@/screens/Initiation";
 
 export default function Home() {
   return (
     <div>
-      <Dashboard/>
+      <Initiation/>
     </div>
   );
 }
