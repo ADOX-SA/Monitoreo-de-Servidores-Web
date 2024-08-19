@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@adoxdesarrollos/designsystem-2@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@adoxdesarrollos/designsystem-2/-/designsystem-2-0.7.2.tgz#3f20a89553b6d658771b20e44e23cbff4f9183a8"
+  integrity sha512-Auz78aEjWwX/FDEquCntt6a39D1WGcTIWF9yttT9JVkHXOOnDa7CP/h+CLIYW880STs8MUhWQxPCo09xCelboQ==
+  dependencies:
+    classnames "^2.3.2"
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.24.7":
   version "7.24.7"
   resolved "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.24.7.tgz"
@@ -854,6 +861,11 @@ chart.js@^4.4.3:
   integrity sha512-qK1gkGSRYcJzqrrzdR6a+I0vQ4/R+SoODXyAjscQ/4mzuNzySaMCd+hyVxitSY1+L2fjPD1Gbn+ibNqRmwQeLw==
   dependencies:
     "@kurkle/color" "^0.3.0"
+
+classnames@^2.3.2:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
+  integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
 
 client-only@0.0.1:
   version "0.0.1"

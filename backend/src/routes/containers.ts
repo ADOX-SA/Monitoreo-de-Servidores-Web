@@ -1,9 +1,8 @@
 import express from "express";  
-import { images } from "../controllers/containers.controller";
+import { getContainerMetricsHandler } from "../controllers/containers.controller";
 
 var router = express.Router();
 
-router.get("/all", images);
-
+router.get("/all", getContainerMetricsHandler);
 
 export default router;
