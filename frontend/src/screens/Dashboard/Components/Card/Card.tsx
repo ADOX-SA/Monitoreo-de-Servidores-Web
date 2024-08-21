@@ -23,10 +23,10 @@ const formatValue = (value: string): number | string => {
 };
 
 const Card: React.FC<ContainerCardProps> = ({ container }) => {
-  const cpu = formatValue(container.cpu);
-  const memory = formatValue(container.memory);
-  const networkReceive = formatValue(container.networkReceive);
-  const networkTransmit = formatValue(container.networkTransmit);
+  //const cpu = formatValue(container.cpu);
+  //const memory = formatValue(container.memory);
+  //const networkReceive = formatValue(container.networkReceive);
+  //const networkTransmit = formatValue(container.networkTransmit);
 
   return (
     <Container customClassNames={styles.card}>
@@ -38,6 +38,7 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
           <Icon color='red' name='warningsign' size="extra-large"></Icon>}
         </Paragraph>
       </Container>
+      {/*
       <Divider thickness='sm'/>
       <Container alignItems='flex-start'>
         {cpu !== 'N/A' && <p>CPU: <strong>{(cpu as number).toFixed(2)} %</strong></p>}
@@ -45,7 +46,8 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
         {networkReceive !== 'N/A' && <p>Recepción de Red: <strong>{(networkReceive as number / 1e6).toFixed(2)} MB</strong></p>}
         {networkTransmit !== 'N/A' && <p>Transmisión de Red: <strong>{(networkTransmit as number / 1e6).toFixed(2)} MB</strong></p>}
       </Container>
-      <Divider thickness='sm'/>  
+      <Divider thickness='sm'/> 
+      */}
     </Container>
   );
 };

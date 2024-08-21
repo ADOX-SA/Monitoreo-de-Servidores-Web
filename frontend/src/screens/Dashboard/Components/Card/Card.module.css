@@ -3,22 +3,43 @@
 .card {
     border: 1px solid #000000;
     border-radius: 1em;
-    padding: 16px;
+    padding: 16px !important;
     margin: 16px;
-    width: 200px;
-    display: inline-block;
+    width: 250px !important;
+    max-width: 250px !important;
+    height: auto;
+    max-height: 350px;
+    display: inline-block !important;
+    overflow: hidden; /* Oculta el contenido que excede el alto máximo */
+    box-sizing: border-box; /* Incluye padding y border en el tamaño total */
 }
 
-
+/* Estilo de la tarjeta en pantallas pequeñas */
+@media (max-width: 250px) {
+  .name {
+    font-size: 12px !important; /* Cambia el tamaño de la fuente en pantallas pequeñas */
+  }
+}
 
 .name{
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  font-size: 24px;
+  font-size: 24px; /* El tamaño del texto se adapta dinámicamente al ancho del viewport */
   text-align: center;
   color: #000000;
+  white-space: nowrap; /* Evita el salto de línea en el texto */
+  overflow: hidden; /* Oculta el texto que excede el contenedor */
+  text-overflow: ellipsis; /* Muestra '...' si el texto es demasiado largo */
+  display: block !important; /* Asegura que el texto ocupe una línea */
 }
 
 .items{
     text-align: center;
+}
+
+/* Opcional: Ajusta el tamaño del texto en pantallas más pequeñas */
+@media (max-width: 250px) {
+  .name {
+      font-size: 12px !important; /* Ajusta el tamaño de la fuente en pantallas pequeñas */
+  }
 }

@@ -21,17 +21,13 @@ const Dashboard = () => {
       try {
         const response = await axios.get('http://localhost:5000/api/containers/all');
         const data = response.data;
-
+        
         // Transformar los datos recibidos al formato esperado por el frontend
         const transformedData = data
-          .filter((container: any) => container.name && container.cpu && container.memory && container.networkReceive && container.networkTransmit)
+          .filter((container: any) => container.name)
           .map((container: any) => ({
             name: container.name,
             state: container.state,
-            cpu: parseFloat(container.cpu),
-            memory: parseFloat(container.memory),
-            networkReceive: parseFloat(container.networkReceive),
-            networkTransmit: parseFloat(container.networkTransmit),
           }));
           
         setContainers(transformedData);

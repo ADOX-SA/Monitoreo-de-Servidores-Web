@@ -458,7 +458,7 @@ docker-modem@^5.0.3:
 
 dockerode@^4.0.2:
   version "4.0.2"
-  resolved "https://registry.npmjs.org/dockerode/-/dockerode-4.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/dockerode/-/dockerode-4.0.2.tgz#dedc8529a1db3ac46d186f5912389899bc309f7d"
   integrity sha512-9wM1BVpVMFr2Pw3eJNXrYYt6DT9k0xMcsSCjtPvyQ+xa1iPg/Mo3T/gUcwI0B2cczqCeCYRPF8yFYDwtFXT0+w==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
