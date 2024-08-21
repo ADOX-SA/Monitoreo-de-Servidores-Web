@@ -1,50 +1,53 @@
-"use client";
+import React, { useEffect, useState } from 'react';
 import styles from './Card.module.css';
-import { Container, Divider, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
-
-// Tipo para el contenedor
-type Container = {
-  name: string;
-  state: string;
-  cpu: string; // Cambiado a string para manejar "N/A"
-  memory: string; // Cambiado a string para manejar "N/A"
-  networkReceive: string; // Cambiado a string para manejar "N/A"
-  networkTransmit: string; // Cambiado a string para manejar "N/A"
-};
+import { Container, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
 
 type ContainerCardProps = {
-  container: Container;
-};
-
-// Función para convertir el valor a número y manejar casos de "N/A"
-const formatValue = (value: string): number | string => {
-  const parsedValue = parseFloat(value);
-  return isNaN(parsedValue) ? 'N/A' : parsedValue;
+  container: {
+    name: string;
+    state: string;
+  };
 };
 
 const Card: React.FC<ContainerCardProps> = ({ container }) => {
-  //const cpu = formatValue(container.cpu);
-  //const memory = formatValue(container.memory);
-  //const networkReceive = formatValue(container.networkReceive);
-  //const networkTransmit = formatValue(container.networkTransmit);
+  const [hasPlayedSound, setHasPlayedSound] = useState(false);
+
+  const playSound = () => {
+    const audio = new Audio('/audio/Alarma.m4a');
+    audio.play().catch(error => {
+      console.error('Error al reproducir el sonido:', error);
+    });
+  };
+
+  useEffect(() => {
+    if (container.state === 'exited' && !hasPlayedSound) {
+      playSound();
+      alert(`El contenedor ${container.name} está detenido.`); // Muestra la alerta
+      setHasPlayedSound(true); // Asegura que el sonido se reproduzca solo una vez
+    } else if (container.state === 'running') {
+      setHasPlayedSound(false); // Resetea si el contenedor vuelve a estar en ejecución
+    }
+  }, [container.state, container.name, hasPlayedSound]);
 
   return (
     <Container customClassNames={styles.card}>
       <Container customClassNames={styles.name}>{container.name}</Container>
       <Container customClassNames={styles.items}>
-        <Paragraph>{container.state == "running"? 
-          <Icon color='green' name='checkmark' size="extra-large"></Icon>
-          : 
-          <Icon color='red' name='warningsign' size="extra-large"></Icon>}
+        <Paragraph>
+          {container.state === "running" ? (
+            <Icon color='green' name='checkmark' size="extra-large" />
+          ) : (
+            <Icon color='red' name='warningsign' size="extra-large" />
+          )}
         </Paragraph>
       </Container>
-      {/*
+      {/* 
       <Divider thickness='sm'/>
       <Container alignItems='flex-start'>
-        {cpu !== 'N/A' && <p>CPU: <strong>{(cpu as number).toFixed(2)} %</strong></p>}
-        {memory !== 'N/A' && <p>RAM: <strong>{(memory as number / 1e6).toFixed(2)} MB</strong></p>}
-        {networkReceive !== 'N/A' && <p>Recepción de Red: <strong>{(networkReceive as number / 1e6).toFixed(2)} MB</strong></p>}
-        {networkTransmit !== 'N/A' && <p>Transmisión de Red: <strong>{(networkTransmit as number / 1e6).toFixed(2)} MB</strong></p>}
+        {container.cpu && <p>CPU: <strong>{container.cpu.toFixed(2)} %</strong></p>}
+        {container.memory && <p>RAM: <strong>{(container.memory / 1e6).toFixed(2)} MB</strong></p>}
+        {container.networkReceive && <p>Recepción de Red: <strong>{(container.networkReceive / 1e6).toFixed(2)} MB</strong></p>}
+        {container.networkTransmit && <p>Transmisión de Red: <strong>{(container.networkTransmit / 1e6).toFixed(2)} MB</strong></p>}
       </Container>
       <Divider thickness='sm'/> 
       */}
