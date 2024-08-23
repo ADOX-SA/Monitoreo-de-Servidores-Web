@@ -15,7 +15,6 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
 
   const playSound = (): Promise<void> => {
     return new Promise((resolve, reject) => {
-      alert(`El contenedor ${container.name} está detenido.`);
       const audio = new Audio('/audio/Alarma.m4a');
       audio.play()
         .then(() => resolve())
@@ -35,6 +34,7 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
     if (container.state === 'exited' && !hasPlayedSound) {
       // Trigger sound with user interaction, e.g., button click
       handlePlaySound();
+      alert(`El contenedor ${container.name} está detenido.`);
     } else if (container.state === 'running') {
       setHasPlayedSound(false); // Reset if the container is running
     }
