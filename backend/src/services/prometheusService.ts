@@ -33,7 +33,7 @@ export const getContainerInfo = async () => {
                 name: container.Names[0].replace('/', ''), // Quita el prefijo '/' del nombree
                 state: container.State,
                 project: container.Labels['com.docker.compose.project'],
-                Status: container.Status,
+                status: container.Status,
             }));
 
             return mappedContainers;

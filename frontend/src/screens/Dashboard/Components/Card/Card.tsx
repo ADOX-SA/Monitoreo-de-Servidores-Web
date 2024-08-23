@@ -6,6 +6,7 @@ type ContainerCardProps = {
   container: {
     name: string;
     state: string;
+    status: string;
   };
 };
 
@@ -14,6 +15,7 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
 
   const playSound = (): Promise<void> => {
     return new Promise((resolve, reject) => {
+      alert(`El contenedor ${container.name} está detenido.`);
       const audio = new Audio('/audio/Alarma.m4a');
       audio.play()
         .then(() => resolve())
@@ -25,14 +27,8 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
   };
 
   const handlePlaySound = async () => {
-    try {
-      await playSound(); // Reproduce el sonido y espera a que termine
-      alert(`El contenedor ${container.name} está detenido.`);
-      setHasPlayedSound(true);
-    } catch (error) {
-      // Maneja errores si el sonido no se puede reproducir
-      console.error('Error en handlePlaySound:', error);
-    }
+    await playSound(); // Reproduce el sonido y espera a que termine
+    setHasPlayedSound(true);
   };
 
   useEffect(() => {
@@ -57,6 +53,7 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
           )}
         </Paragraph>
       </Container>
+      <Paragraph customClassNames={styles.name}>{container.status}</Paragraph>
       {/* 
       <Divider thickness='sm'/>
       <Container alignItems='flex-start'>

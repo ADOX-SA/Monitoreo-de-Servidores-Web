@@ -7,10 +7,7 @@ import styles from './Dashboard.module.css';
 type Container = {
   name: string;
   state: string;
-  cpu: string;
-  memory: string;
-  networkReceive: string;
-  networkTransmit: string;
+  status: string;
 };
 
 const Dashboard = () => {
@@ -20,17 +17,7 @@ const Dashboard = () => {
     const fetchData = async (): Promise<void> => {
       try {
         const response = await axios.get('http://localhost:5000/api/containers/all');
-        const data = response.data;
-        
-        // Transformar los datos recibidos al formato esperado por el frontend
-        const transformedData = data
-          .filter((container: any) => container.name)
-          .map((container: any) => ({
-            name: container.name,
-            state: container.state,
-          }));
-          
-        setContainers(transformedData);
+        setContainers(response.data);
       } catch (error) {
         console.error("Error fetching containers:", error);
       }
