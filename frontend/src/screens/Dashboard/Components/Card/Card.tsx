@@ -38,7 +38,7 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
   useEffect(() => {
     if (container.state === 'exited' && !hasPlayedSound) {
       // Trigger sound with user interaction, e.g., button click
-      document.getElementById('play-sound-button')?.addEventListener('click', handlePlaySound);
+      handlePlaySound();
     } else if (container.state === 'running') {
       setHasPlayedSound(false); // Reset if the container is running
     }

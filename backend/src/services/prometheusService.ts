@@ -1,26 +1,46 @@
-import Docker from 'dockerode';
+const https = require('https');
+import axios from 'axios';
 
-// Configura Dockerode para conectarse al daemon Docker en el servidor
-const docker = new Docker({ 
-    host: 'http://localhost:2375',  // Reemplaza con la URL del daemon Docker en el servidor
-    port: 2375                 // El puerto en el que Docker está escuchando
+const url = process.env.PORTAINER_API_URL;
+const key = process.env.API_KEY;
+const idConteinerDocker = process.env.ID_CONTAINTER_DOCKER;
+
+
+const instance = axios.create({
+    httpsAgent: new https.Agent({  
+      rejectUnauthorized: false
+    })
 });
 
-// Función para obtener información de los contenedores
+interface Container{
+    ImageID: string;
+    Names: string;
+    State: string;
+    Labels: string;
+    project?: string;
+    Status: string;
+};
+
+
+// TODO:Función para obtener información de los contenedores
 export const getContainerInfo = async () => {
     try {
-        // Lista todos los contenedores, incluyendo los detenidos
-        const containers = await docker.listContainers({ all: true });
+       return instance.get(`${url}/api/endpoints/${idConteinerDocker}/docker/containers/json?all=1&X-API-Key=${key}`)
+        .then(response => {
+            
+            const mappedContainers = response.data.map((container : Container) => ({
+                id: container.ImageID,
+                name: container.Names[0].replace('/', ''), // Quita el prefijo '/' del nombree
+                state: container.State,
+                project: container.Labels['com.docker.compose.project'],
+                Status: container.Status,
+            }));
 
-        // Mapea la información de los contenedores a un formato más simple
-        const containerInfo = containers.map(container => ({
-            id: container.Id,
-            name: container.Names[0].replace('/', ''), // Quita el prefijo '/' del nombre
-            state: container.State
-        }));
-
-        console.log(containerInfo);
-        return containerInfo;
+            return mappedContainers;
+        })
+        .catch(error => {
+            console.error(error);
+        });
     } catch (error) {
         console.error('Error fetching container information:', error);
         throw new Error('Error fetching container information');
