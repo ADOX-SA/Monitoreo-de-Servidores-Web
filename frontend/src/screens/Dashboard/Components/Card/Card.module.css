@@ -7,8 +7,8 @@
     margin: 16px;
     width: 250px !important;
     max-width: 250px !important;
-    height: auto;
-    max-height: 350px;
+    height: 180px !important;
+    max-height: 200px;
     display: inline-block !important;
     overflow: hidden; /* Oculta el contenido que excede el alto máximo */
     box-sizing: border-box; /* Incluye padding y border en el tamaño total */
@@ -23,8 +23,8 @@
 
 .name{
   font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 24px; /* El tamaño del texto se adapta dinámicamente al ancho del viewport */
+  font-weight: 400 !important;
+  font-size: 20px !important; /* El tamaño del texto se adapta dinámicamente al ancho del viewport */
   text-align: center;
   color: #000000;
   white-space: nowrap; /* Evita el salto de línea en el texto */
@@ -45,5 +45,29 @@
 }
 
 .conteiner{
-  text-align: left !important;
+  text-align: center !important;
+}
+
+.nameContainer{
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400 !important;
+  font-size: 32px !important;
+  text-align: center;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block !important;
+}
+
+
+.description{
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400 !important;
+  font-size: 20px !important; /* El tamaño del texto se adapta dinámicamente al ancho del viewport */
+  text-align: center;
+  color: #000000;
+  overflow: hidden; /* Oculta el texto que excede el contenedor */
+  text-overflow: ellipsis; /* Muestra '...' si el texto es demasiado largo */
+  display: block !important; /* Asegura que el texto ocupe una línea */
 }

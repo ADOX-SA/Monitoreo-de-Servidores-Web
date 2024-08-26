@@ -1,6 +1,8 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import styles from './Card.module.css';
-import { Container, Divider, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
+import { Container, Divider, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
+import { capitalizeFirstLetter, translateStatus } from '@/utils/func.utils';
 
 type Containers={
   name: string;
@@ -34,12 +36,10 @@ type ContainerCardProps = {
   };
 };
 
-
 const Card: React.FC<ContainerCardProps> = ({ data }) => {
   const [hasPlayedSound, setHasPlayedSound] = useState(false);
-  const [conteiners, setContainers] = useState(data.snapshots[0].containers);
-
-  console.log("Conteiners hook:", conteiners);
+  const [containers, setContainers] = useState<Containers[]>([]);
+  const [alertedContainers, setAlertedContainers] = useState<string[]>([]);
 
   const playSound = (): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -54,45 +54,54 @@ const Card: React.FC<ContainerCardProps> = ({ data }) => {
   };
 
   const handlePlaySound = async () => {
-    await playSound(); // Reproduce el sonido y espera a que termine
+    await playSound();
     setHasPlayedSound(true);
   };
 
-  
-  useEffect(() => {
-      {
-      if (conteiners.state === 'exited' && !hasPlayedSound) {
-        // Trigger sound with user interaction, e.g., button click
-        handlePlaySound();
-        alert(`El contenedor ${data.name} está detenido.`);
-      } else if (conteiners.state === 'running') {
-        setHasPlayedSound(false); // Reset if the container is running
-      }
-    };
-  }, [data.state, data.name, hasPlayedSound]);
 
+  useEffect(() => {
+    // Ordena los contenedores con estado 'exited' o 'created' al principio
+    const sortedContainers = data.snapshots[0].containers.slice().sort((a, b) => {
+      if (a.state === 'exited' || a.state === 'created' && b.state !== 'exited') return -1;
+      if (a.state !== 'exited' && b.state === 'exited' || b.state === 'created') return 1;
+      return 0;
+    });
+    setContainers(sortedContainers);
+  }, [data.snapshots[0].containers]);
+
+  useEffect(() => {
+    containers.forEach(c => {
+      if (c.state === 'exited' && !alertedContainers.includes(c.name)) {
+        alert(`El contenedor ${c.name} está detenido.`);
+        setAlertedContainers(prev => [...prev, c.name]);
+        handlePlaySound();
+      } else if (c.state === 'running') {
+        setHasPlayedSound(false);
+      }
+    });
+  }, [containers, alertedContainers]);
 
   return (
-    <div className={styles.conteiner}>
-      <Divider></Divider>
-      <Paragraph customClassNames={styles.name}>{data.name}</Paragraph>
-      {data.snapshots[0].containers.map((container, index) => (
-        <Container key={index} customClassNames={styles.card}>
-          <Container key={index} customClassNames={styles.name}>{container.name}</Container>
-            <Container key={index} customClassNames={styles.items}>
-              <Paragraph>
-                {container.state === "running" ? (
-                  <Icon color='green' name='checkmark' size="extra-large" />
-                ) : (
-                  <Icon color='red' name='warningsign' size="extra-large" />
-                )}
-              </Paragraph>
-            </Container>
-          <Paragraph key={index} customClassNames={styles.name}>{container.status}</Paragraph>
-        </Container>
-    ))}
-    </div>
-
+    <Container customClassNames={styles.conteiner} fullWidth>
+      <Divider />
+      <Spacer/>
+      <Paragraph customClassNames={styles.nameContainer}>{`<${capitalizeFirstLetter(data.name)}>`} <Icon name='shippingbox'></Icon></Paragraph>
+        {containers.map((container, index) => (
+        <Container key={container.name + '-name'} customClassNames={styles.card}>
+          <Container key={container.name + '-name'} customClassNames={styles.name}>{`${capitalizeFirstLetter(container.name)}`}</Container>
+              <Container customClassNames={styles.items}>
+                <Paragraph>
+                  {container.state === "running" ? (
+                    <Icon color='green' name='checkmark' size="extra-large" />
+                  ) : (
+                    <Icon color='red' name='warningsign' size="extra-large" />
+                  )}
+                </Paragraph>
+              </Container>
+            <Paragraph customClassNames={styles.description}>{translateStatus(container.status)}</Paragraph>
+          </Container>
+        ))}
+    </Container>
   );
 };
 

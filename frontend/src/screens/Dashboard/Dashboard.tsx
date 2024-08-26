@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card } from './Components/Card';
 import styles from './Dashboard.module.css';
+import { Container } from '@adoxdesarrollos/designsystem-2';
 
 type Container = {
   id: string;
@@ -30,11 +31,11 @@ const Dashboard = () => {
 
   
   return (
-    <div className={styles.container}>
+    <Container customClassNames={styles.container}>
       {containers.map((container, index) => (
         <Card key={index} data={container} />
       ))}
-    </div>
+    </Container>
   );
 };
 
