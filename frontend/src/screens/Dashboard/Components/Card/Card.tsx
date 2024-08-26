@@ -1,51 +1,106 @@
 "use client";
+import React, { useEffect, useState } from 'react';
 import styles from './Card.module.css';
-import { Container, Divider, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
+import { Container, Divider, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
+import { capitalizeFirstLetter, translateStatus } from '@/utils/func.utils';
 
-// Tipo para el contenedor
-type Container = {
+type Containers={
   name: string;
   state: string;
-  cpu: string; // Cambiado a string para manejar "N/A"
-  memory: string; // Cambiado a string para manejar "N/A"
-  networkReceive: string; // Cambiado a string para manejar "N/A"
-  networkTransmit: string; // Cambiado a string para manejar "N/A"
-};
+  status: string;
+}
+
+type Snapshots ={
+  time: BigInteger,
+  dockerVersion: string,
+  swarm: boolean,
+  totalCPU: Number,
+  totalMemory: BigInt,
+  runningContainerCount: Number,
+  stoppedContainerCount: Number,
+  healthyContainerCount: Number,
+  unhealthyContainerCount: Number,
+  volumeCount: Number,
+  imageCount: Number,
+  serviceCount: Number,
+  stackCount: Number,
+  containers: Containers[];
+}
 
 type ContainerCardProps = {
-  container: Container;
+  data: {
+    id: string;
+    name: string;
+    status: string;
+    snapshots: Snapshots[];
+  };
 };
 
-// Función para convertir el valor a número y manejar casos de "N/A"
-const formatValue = (value: string): number | string => {
-  const parsedValue = parseFloat(value);
-  return isNaN(parsedValue) ? 'N/A' : parsedValue;
-};
+const Card: React.FC<ContainerCardProps> = ({ data }) => {
+  const [hasPlayedSound, setHasPlayedSound] = useState(false);
+  const [containers, setContainers] = useState<Containers[]>([]);
+  const [alertedContainers, setAlertedContainers] = useState<string[]>([]);
 
-const Card: React.FC<ContainerCardProps> = ({ container }) => {
-  const cpu = formatValue(container.cpu);
-  const memory = formatValue(container.memory);
-  const networkReceive = formatValue(container.networkReceive);
-  const networkTransmit = formatValue(container.networkTransmit);
+  const playSound = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio('/audio/Alarma.m4a');
+      audio.play()
+        .then(() => resolve())
+        .catch(error => {
+          console.error('Error al reproducir el sonido:', error);
+          reject(error);
+        });
+    });
+  };
+
+  const handlePlaySound = async () => {
+    await playSound();
+    setHasPlayedSound(true);
+  };
+
+
+  useEffect(() => {
+    // Ordena los contenedores con estado 'exited' o 'created' al principio
+    const sortedContainers = data.snapshots[0].containers.slice().sort((a, b) => {
+      if (a.state === 'exited' || a.state === 'created' && b.state !== 'exited') return -1;
+      if (a.state !== 'exited' && b.state === 'exited' || b.state === 'created') return 1;
+      return 0;
+    });
+    setContainers(sortedContainers);
+  }, [data.snapshots[0].containers]);
+
+  useEffect(() => {
+    containers.forEach(c => {
+      if (c.state === 'exited' && !alertedContainers.includes(c.name)) {
+        alert(`El contenedor ${c.name} está detenido.`);
+        setAlertedContainers(prev => [...prev, c.name]);
+        handlePlaySound();
+      } else if (c.state === 'running') {
+        setHasPlayedSound(false);
+      }
+    });
+  }, [containers, alertedContainers]);
 
   return (
-    <Container customClassNames={styles.card}>
-      <Container customClassNames={styles.name}>{container.name}</Container>
-      <Container customClassNames={styles.items}>
-        <Paragraph>{container.state == "running"? 
-          <Icon color='green' name='checkmark' size="extra-large"></Icon>
-          : 
-          <Icon color='red' name='warningsign' size="extra-large"></Icon>}
-        </Paragraph>
-      </Container>
-      <Divider thickness='sm'/>
-      <Container alignItems='flex-start'>
-        {cpu !== 'N/A' && <p>CPU: <strong>{(cpu as number).toFixed(2)} %</strong></p>}
-        {memory !== 'N/A' && <p>RAM: <strong>{(memory as number / 1e6).toFixed(2)} MB</strong></p>}
-        {networkReceive !== 'N/A' && <p>Recepción de Red: <strong>{(networkReceive as number / 1e6).toFixed(2)} MB</strong></p>}
-        {networkTransmit !== 'N/A' && <p>Transmisión de Red: <strong>{(networkTransmit as number / 1e6).toFixed(2)} MB</strong></p>}
-      </Container>
-      <Divider thickness='sm'/>  
+    <Container customClassNames={styles.conteiner} fullWidth>
+      <Divider />
+      <Spacer/>
+      <Paragraph customClassNames={styles.nameContainer}>{`<${capitalizeFirstLetter(data.name)}>`} <Icon name='shippingbox'></Icon></Paragraph>
+        {containers.map((container, index) => (
+        <Container key={container.name + '-name'} customClassNames={styles.card}>
+          <Container key={container.name + '-name'} customClassNames={styles.name}>{`${capitalizeFirstLetter(container.name)}`}</Container>
+              <Container customClassNames={styles.items}>
+                <Paragraph>
+                  {container.state === "running" ? (
+                    <Icon color='green' name='checkmark' size="extra-large" />
+                  ) : (
+                    <Icon color='red' name='warningsign' size="extra-large" />
+                  )}
+                </Paragraph>
+              </Container>
+            <Paragraph customClassNames={styles.description}>{translateStatus(container.status)}</Paragraph>
+          </Container>
+        ))}
     </Container>
   );
 };

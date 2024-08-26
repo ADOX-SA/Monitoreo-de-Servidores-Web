@@ -1,135 +1,144 @@
+const https = require('https');
 import axios from 'axios';
-import { execSync } from 'child_process';
 
-const PROMETHEUS_URL = process.env.PROMETHEUS_URL || 'http://localhost:9090';
+const url = process.env.URL_PORTAINER;
+const token = process.env.BEARER_TOKEN;
 
-interface MetricData {
-    metric: {
-        name: string;
-    };
-    value: [number, string];
-}
-
-interface ContainerRegistry {
-    [key: string]: {
-        state: string;
-    };
-}
-
-interface Metric {
-    name: string;
-    state: string;
-    cpu: string;
-    memory: string;
-    networkReceive: string;
-    networkTransmit: string;
-}
-
-let containerRegistry: ContainerRegistry = {};
-
-export const getContainerMetrics = async () => {
-    try {
-        updateContainerRegistryFromDocker();
-
-        const queries = [
-            'container_tasks_state{job="cadvisor"}', 
-            'container_cpu_usage_seconds_total{job="cadvisor"}',
-            'container_memory_usage_bytes{job="cadvisor"}',
-            'container_network_receive_bytes_total{job="cadvisor"}',
-            'container_network_transmit_bytes_total{job="cadvisor"}'
-        ];
-
-        const promises = queries.map(query => 
-            axios.get(`${PROMETHEUS_URL}/api/v1/query`, {
-                params: { query }
-            })
-        );
-
-        const results = await Promise.all(promises);
-
-        const metrics = {
-            states: results[0].data.data.result as MetricData[],
-            cpu: results[1].data.data.result as MetricData[],
-            memory: results[2].data.data.result as MetricData[],
-            networkReceive: results[3].data.data.result as MetricData[],
-            networkTransmit: results[4].data.data.result as MetricData[]
-        };
-
-        const containers = processContainerMetrics(metrics, containerRegistry);
-
-        // Eliminar duplicados de los contenedores
-        return removeDuplicates(containers);
-    } catch (error) {
-        console.error('Error fetching metrics from Prometheus:', error);
-        throw new Error('Error fetching metrics from Prometheus');
+const instance = axios.create({
+    httpsAgent: new https.Agent({  
+        rejectUnauthorized: false
+    }),
+    headers: {
+        'x-api-key': token, // Configuración correcta para x-api-key
+        //'Authorization': `Bearer ${token}` // Usar este en lugar del anterior si necesitas un Bearer token :P
     }
-};
+});
 
-// Actualiza el registro de contenedores usando `docker ps -a`
-const updateContainerRegistryFromDocker = () => {
-    const containerStatus = execSync('docker ps -a --format "{{.Names}} {{.Status}}"').toString();
-    const lines = containerStatus.split('\n');
+interface ContainerPort {
+    IP: string;
+    PrivatePort: number;
+    PublicPort: number;
+    Type: string;
+}
 
-    lines.forEach(line => {
-        const [name, ...statusParts] = line.split(' ');
-        const status = statusParts.join(' ');
+interface NetworkSettings {
+    IPAddress: string;
+    NetworkID: string;
+    EndpointID: string;
+    Gateway: string;
+    MacAddress: string;
+}
 
-        containerRegistry[name] = {
-            state: status.includes('Exited') ? 'stopped' : 'running'
+interface Container {
+    Id: string;
+    Names: string[];
+    Image: string;
+    ImageID: string;
+    Command: string;
+    Created: number;
+    Ports: ContainerPort[];
+    Labels: Record<string, any>;
+    State: string;
+    Status: string;
+    HostConfig: {
+        NetworkMode: string;
+    };
+    NetworkSettings: {
+        Networks: {
+            [key: string]: NetworkSettings;
         };
-    });
-};
+    };
+    Mounts: any[];
+}
 
-// Elimina entradas repetidas en los datos de métricas
-const removeDuplicates = (metrics: Metric[]): Metric[] => {
-    const uniqueMetrics: { [key: string]: Metric } = {};
+interface DockerSnapshotRaw {
+    Containers: Container[];
+}
 
-    metrics.forEach(metric => {
-        if (!uniqueMetrics[metric.name] || uniqueMetrics[metric.name].state === 'stopped') {
-            uniqueMetrics[metric.name] = metric;
-        }
-    });
+interface Snapshot {
+    Time: number;
+    DockerVersion: string;
+    Swarm: boolean;
+    TotalCPU: number;
+    TotalMemory: number;
+    RunningContainerCount: number;
+    StoppedContainerCount: number;
+    HealthyContainerCount: number;
+    UnhealthyContainerCount: number;
+    VolumeCount: number;
+    ImageCount: number;
+    ServiceCount: number;
+    StackCount: number;
+    DockerSnapshotRaw: DockerSnapshotRaw;
+}
 
-    return Object.values(uniqueMetrics);
-};
+interface ContainerInfo {
+    Id: string;
+    Name: string;
+    Status: string;
+    Snapshots: Snapshot[];
+}
 
-export const processContainerMetrics = (metrics: any, containerRegistry: any) => {
-    const processedMetrics: Metric[] = [];
 
-    metrics.states.forEach((metric: MetricData) => {
-        const containerName = metric.metric.name;
+// TODO:Función para obtener información de los contenedores
+export const getContainerInfo = async () => {
+    try {
+        return instance.get(`${url}/api/endpoints`)
+        .then(response => {
+            const mappedContainers = response.data.map((container: ContainerInfo) => ({
+                id: container.Id,
+                name: container.Name.replace('/', ''), // Elimina el prefijo '/' si está presente
+                status: container.Status,
+                snapshots: container.Snapshots.map(snapshot => ({
+                    time: snapshot.Time,
+                    dockerVersion: snapshot.DockerVersion,
+                    swarm: snapshot.Swarm,
+                    totalCPU: snapshot.TotalCPU,
+                    totalMemory: snapshot.TotalMemory,
+                    runningContainerCount: snapshot.RunningContainerCount,
+                    stoppedContainerCount: snapshot.StoppedContainerCount,
+                    healthyContainerCount: snapshot.HealthyContainerCount,
+                    unhealthyContainerCount: snapshot.UnhealthyContainerCount,
+                    volumeCount: snapshot.VolumeCount,
+                    imageCount: snapshot.ImageCount,
+                    serviceCount: snapshot.ServiceCount,
+                    stackCount: snapshot.StackCount,
+                    containers: snapshot.DockerSnapshotRaw.Containers.map(conteiner => ({
+                        //id: c.Id,
+                        name: conteiner.Names[0].replace('/', ''), // Elimina el prefijo '/' si está presente
+                        //image: conteiner.Image,
+                        //imageId: c.ImageID,
+                        //command: c.Command,
+                        //created: c.Created,
+                        /*
+                        ports: c.Ports.map(port => ({
+                            IP: port.IP,
+                            privatePort: port.PrivatePort,
+                            publicPort: port.PublicPort,
+                            type: port.Type,
+                        })),*/
+                        state: conteiner.State,
+                        status: conteiner.Status,
+                        /*
+                        networkSettings: Object.values(c.NetworkSettings.Networks).map(network => ({
+                            ipAddress: network.IPAddress,
+                            networkID: network.NetworkID,
+                            endpointID: network.EndpointID,
+                            gateway: network.Gateway,
+                            macAddress: network.MacAddress,
+                        })),
+                        */
+                    }))
+                }))
+            }));
 
-        if (!containerName) {
-            // TODO: Si no tiene nombre, no lo agrega cuando se hace el push..
-            //console.warn('Missing container name in metrics data');
-            return;
-        }
-
-        processedMetrics.push({
-            name: containerName,
-            state: containerRegistry[containerName]?.state || 'unknown',
-            cpu: metrics.cpu.find((m: MetricData) => m.metric.name === containerName)?.value[1] || "N/A",
-            memory: metrics.memory.find((m: MetricData) => m.metric.name === containerName)?.value[1] || "N/A",
-            networkReceive: metrics.networkReceive.find((m: MetricData) => m.metric.name === containerName)?.value[1] || "N/A",
-            networkTransmit: metrics.networkTransmit.find((m: MetricData) => m.metric.name === containerName)?.value[1] || "N/A"
+            return mappedContainers;
+        })
+        .catch(error => {
+            console.error(error);
         });
-    });
-
-    // Agregar contenedores que están en el registro pero no reportaron métricas
-    Object.keys(containerRegistry).forEach((containerName: string) => {  
-        const metric = processedMetrics.find((container: any) => container.name === containerName);
-
-        if (!metric) {
-            processedMetrics.push({
-                name: containerName,
-                state: containerRegistry[containerName]?.state || 'stopped',
-                cpu: "N/A",
-                memory: "N/A",
-                networkReceive: "N/A",
-                networkTransmit: "N/A"
-            });
-        }
-    });
-
-    return processedMetrics;
+    } catch (error) {
+        console.error('Error fetching container information:', error);
+        throw new Error('Error fetching container information');
+    }
 };

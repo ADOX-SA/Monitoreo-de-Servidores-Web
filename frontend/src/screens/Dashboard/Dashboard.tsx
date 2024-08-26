@@ -3,14 +3,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card } from './Components/Card';
 import styles from './Dashboard.module.css';
+import { Container } from '@adoxdesarrollos/designsystem-2';
 
 type Container = {
-  name: string;
-  state: string;
-  cpu: string;
-  memory: string;
-  networkReceive: string;
-  networkTransmit: string;
+  id: string;
+    name: string;
+    status: string;
+    snapshots: [];
 };
 
 const Dashboard = () => {
@@ -20,21 +19,7 @@ const Dashboard = () => {
     const fetchData = async (): Promise<void> => {
       try {
         const response = await axios.get('http://localhost:5000/api/containers/all');
-        const data = response.data;
-
-        // Transformar los datos recibidos al formato esperado por el frontend
-        const transformedData = data
-          .filter((container: any) => container.name && container.cpu && container.memory && container.networkReceive && container.networkTransmit)
-          .map((container: any) => ({
-            name: container.name,
-            state: container.state,
-            cpu: parseFloat(container.cpu),
-            memory: parseFloat(container.memory),
-            networkReceive: parseFloat(container.networkReceive),
-            networkTransmit: parseFloat(container.networkTransmit),
-          }));
-          
-        setContainers(transformedData);
+        setContainers(response.data);
       } catch (error) {
         console.error("Error fetching containers:", error);
       }
@@ -44,12 +29,13 @@ const Dashboard = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  
   return (
-    <div className={styles.container}>
+    <Container customClassNames={styles.container}>
       {containers.map((container, index) => (
-        <Card key={index} container={container} />
+        <Card key={index} data={container} />
       ))}
-    </div>
+    </Container>
   );
 };
 
