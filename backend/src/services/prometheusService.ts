@@ -1,16 +1,16 @@
 const https = require('https');
 import axios from 'axios';
 
-const url = process.env.PORTAINER_API_URL;
+const url = process.env.URL_PORTAINER;
 const token = process.env.BEARER_TOKEN;
 
 const instance = axios.create({
     httpsAgent: new https.Agent({  
-      rejectUnauthorized: false
+        rejectUnauthorized: false
     }),
-    //TODO: Como hago para hacer mas seguro esto Bearer..
     headers: {
-        'Authorization': `Bearer ${token}`,
+        'x-api-key': token, // Configuración correcta para x-api-key
+        //'Authorization': `Bearer ${token}` // Usar este en lugar del anterior si necesitas un Bearer token :P
     }
 });
 
@@ -83,7 +83,7 @@ interface ContainerInfo {
 // TODO:Función para obtener información de los contenedores
 export const getContainerInfo = async () => {
     try {
-       return instance.get(`${url}/api/endpoints`)
+        return instance.get(`${url}/api/endpoints`)
         .then(response => {
             const mappedContainers = response.data.map((container: ContainerInfo) => ({
                 id: container.Id,
