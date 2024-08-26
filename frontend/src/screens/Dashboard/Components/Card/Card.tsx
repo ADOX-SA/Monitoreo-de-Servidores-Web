@@ -1,17 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Card.module.css';
-import { Container, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
+import { Container, Divider, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
+
+type Containers={
+  name: string;
+  state: string;
+  status: string;
+}
+
+type Snapshots ={
+  time: BigInteger,
+  dockerVersion: string,
+  swarm: boolean,
+  totalCPU: Number,
+  totalMemory: BigInt,
+  runningContainerCount: Number,
+  stoppedContainerCount: Number,
+  healthyContainerCount: Number,
+  unhealthyContainerCount: Number,
+  volumeCount: Number,
+  imageCount: Number,
+  serviceCount: Number,
+  stackCount: Number,
+  containers: Containers[];
+}
 
 type ContainerCardProps = {
-  container: {
+  data: {
+    id: string;
     name: string;
-    state: string;
     status: string;
+    snapshots: Snapshots[];
   };
 };
 
-const Card: React.FC<ContainerCardProps> = ({ container }) => {
+
+const Card: React.FC<ContainerCardProps> = ({ data }) => {
   const [hasPlayedSound, setHasPlayedSound] = useState(false);
+  const [conteiners, setContainers] = useState(data.snapshots[0].containers);
+
+  console.log("Conteiners hook:", conteiners);
 
   const playSound = (): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -30,41 +58,41 @@ const Card: React.FC<ContainerCardProps> = ({ container }) => {
     setHasPlayedSound(true);
   };
 
+  
   useEffect(() => {
-    if (container.state === 'exited' && !hasPlayedSound) {
-      // Trigger sound with user interaction, e.g., button click
-      handlePlaySound();
-      alert(`El contenedor ${container.name} está detenido.`);
-    } else if (container.state === 'running') {
-      setHasPlayedSound(false); // Reset if the container is running
-    }
-  }, [container.state, container.name, hasPlayedSound]);
+      {
+      if (conteiners.state === 'exited' && !hasPlayedSound) {
+        // Trigger sound with user interaction, e.g., button click
+        handlePlaySound();
+        alert(`El contenedor ${data.name} está detenido.`);
+      } else if (conteiners.state === 'running') {
+        setHasPlayedSound(false); // Reset if the container is running
+      }
+    };
+  }, [data.state, data.name, hasPlayedSound]);
 
 
   return (
-    <Container customClassNames={styles.card}>
-      <Container customClassNames={styles.name}>{container.name}</Container>
-      <Container customClassNames={styles.items}>
-        <Paragraph>
-          {container.state === "running" ? (
-            <Icon color='green' name='checkmark' size="extra-large" />
-          ) : (
-            <Icon color='red' name='warningsign' size="extra-large" />
-          )}
-        </Paragraph>
-      </Container>
-      <Paragraph customClassNames={styles.name}>{container.status}</Paragraph>
-      {/* 
-      <Divider thickness='sm'/>
-      <Container alignItems='flex-start'>
-        {container.cpu && <p>CPU: <strong>{container.cpu.toFixed(2)} %</strong></p>}
-        {container.memory && <p>RAM: <strong>{(container.memory / 1e6).toFixed(2)} MB</strong></p>}
-        {container.networkReceive && <p>Recepción de Red: <strong>{(container.networkReceive / 1e6).toFixed(2)} MB</strong></p>}
-        {container.networkTransmit && <p>Transmisión de Red: <strong>{(container.networkTransmit / 1e6).toFixed(2)} MB</strong></p>}
-      </Container>
-      <Divider thickness='sm'/> 
-      */}
-    </Container>
+    <div className={styles.conteiner}>
+      <Divider></Divider>
+      <Paragraph customClassNames={styles.name}>{data.name}</Paragraph>
+      {data.snapshots[0].containers.map((container, index) => (
+        <Container key={index} customClassNames={styles.card}>
+          <Container key={index} customClassNames={styles.name}>{container.name}</Container>
+            <Container key={index} customClassNames={styles.items}>
+              <Paragraph>
+                {container.state === "running" ? (
+                  <Icon color='green' name='checkmark' size="extra-large" />
+                ) : (
+                  <Icon color='red' name='warningsign' size="extra-large" />
+                )}
+              </Paragraph>
+            </Container>
+          <Paragraph key={index} customClassNames={styles.name}>{container.status}</Paragraph>
+        </Container>
+    ))}
+    </div>
+
   );
 };
 

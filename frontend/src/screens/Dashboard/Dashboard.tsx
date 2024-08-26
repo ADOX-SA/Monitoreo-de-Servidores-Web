@@ -5,9 +5,10 @@ import { Card } from './Components/Card';
 import styles from './Dashboard.module.css';
 
 type Container = {
-  name: string;
-  state: string;
-  status: string;
+  id: string;
+    name: string;
+    status: string;
+    snapshots: [];
 };
 
 const Dashboard = () => {
@@ -31,7 +32,7 @@ const Dashboard = () => {
   return (
     <div className={styles.container}>
       {containers.map((container, index) => (
-        <Card key={index} container={container} />
+        <Card key={index} data={container} />
       ))}
     </div>
   );

@@ -43,3 +43,7 @@
       font-size: 12px !important; /* Ajusta el tamaño de la fuente en pantallas pequeñas */
   }
 }
+
+.conteiner{
+  text-align: left !important;
+}
