@@ -80,11 +80,26 @@ interface ContainerInfo {
     Snapshots: Snapshot[];
 }
 
+const getTotalCPUCores = async () => {
+    try {
+        // Consulta para obtener el número total de núcleos de CPU
+        const response = await axios.get(`${prometheus}/api/v1/query?query=node_cpu_seconds_total{mode="user"}`);
+        const totalCores = parseFloat(response.data.data.result[0]?.value[1] || '1'); // Asegúrate de tener un valor predeterminado
+
+        return totalCores;
+    } catch (error) {
+        console.error('Error fetching total CPU cores from Prometheus:', error);
+        return 1; // Valor predeterminado en caso de error
+    }
+};
+
 const convertBytesToMB = (bytes: string) => (parseFloat(bytes) / (1024 ** 2)).toFixed(2);
 
 // Función para obtener métricas de Prometheus para un contenedor específico
-const getContainerMetrics = async (containerName: string, totalCPU: number) => {
+const getContainerMetrics = async (containerName: string) => {
     try {
+        const totalCores = await getTotalCPUCores();
+
         const cpuQuery = `container_cpu_usage_seconds_total{name="${containerName}"}`;
         const memoryQuery = `container_memory_usage_bytes{name="${containerName}"}`;
         const networkQuery = `container_network_receive_bytes_total{name="${containerName}"}`;
@@ -94,11 +109,8 @@ const getContainerMetrics = async (containerName: string, totalCPU: number) => {
         const networkResponse = await instance.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(networkQuery)}`);
 
         const cpuValue = parseFloat(cpuResponse.data.data.result[0]?.value[1] || '0');
+        const cpuUsagePercentage = (cpuValue * 100) / (totalCores * 60);
 
-        //TODO: Esto es muy falopa el calculo
-        const cpuUsagePercentage = (cpuValue * 100) / (totalCPU * 1000000); // Ajuste en el cálculo del porcentaje de CPU
-
-        
         return {
             cpu: cpuUsagePercentage.toFixed(2),
             memory: convertBytesToMB(memoryResponse.data.data.result[0]?.value[1] || '0'),
@@ -136,7 +148,7 @@ export const mapContainersWithMetrics = async (response: any) => {
                     stackCount: snapshot.StackCount,
                     containers: await Promise.all(
                         snapshot.DockerSnapshotRaw.Containers.map(async (conteiner: any) => {
-                            const metrics = await getContainerMetrics(conteiner.Names[0].replace('/', ''), snapshot.TotalCPU);
+                            const metrics = await getContainerMetrics(conteiner.Names[0].replace('/', ''));
                             return {
                                 //id: c.Id,
                                 name: conteiner.Names[0].replace('/', ''), // Elimina el prefijo '/' si está presente
