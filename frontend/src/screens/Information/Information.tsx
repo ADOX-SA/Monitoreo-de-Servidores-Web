@@ -8,6 +8,11 @@ type Containers={
   name: string;
   state: string;
   status: string;
+  metrics:{
+    cpu: string;
+    memory: string;
+    network: string;
+  }
 };
 
 type Snapshots ={

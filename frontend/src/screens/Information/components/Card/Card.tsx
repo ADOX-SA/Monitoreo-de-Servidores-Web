@@ -1,4 +1,4 @@
-import { Container, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
+import { Container, Divider, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
 import styles from './Card.module.css';
 import { capitalizeFirstLetter, extractKeyword, translateStatus } from '@/utils/func.utils';
 import { useEffect, useState } from 'react';
@@ -7,6 +7,11 @@ type Containers={
     name: string;
     state: string;
     status: string;
+    metrics:{
+      cpu: string;
+      memory: string;
+      network: string;
+    }
 };
 
 type Snapshots ={
@@ -106,6 +111,15 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
                 </Paragraph>
               </Container>
             <Paragraph customClassNames={styles.description}>{translateStatus(container.status)}</Paragraph>
+            <Container fullWidth>
+              <Divider/>
+              <Container>
+                <Paragraph size="medium">CPU: <strong>{container.metrics.cpu}%</strong></Paragraph>
+                <Paragraph size="medium">RAM: <strong>{container.metrics.memory}MB</strong></Paragraph>
+                <Paragraph size="medium">RED: <strong>{container.metrics.network}MB</strong></Paragraph>
+              </Container>
+              <Divider/>
+            </Container>
           </Container>
         ))}
     </Container>
