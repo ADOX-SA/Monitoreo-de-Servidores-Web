@@ -5,9 +5,9 @@ export function capitalizeFirstLetter(string: string) {
 
 export function translateStatus(status: string): string {
     const patterns = {
-        up: /Up\s+(\d+\s+(days|weeks|months|minutes))/,
-        exited: /Exited\s+\((\d+)\)\s+(\d+\s+(days|weeks|months|minutes))\s+ago/,
-        exitedWithoutCode: /Exited\s+(\d+\s+(days|weeks|months|minutes))\s+ago/,
+        up: /Up\s+(\d+\s+(days|weeks|months|hours|minutes))/,
+        exited: /Exited\s+\((\d+)\)\s+(\d+\s+(days|weeks|months|hours|minutes))\s+ago/,
+        exitedWithoutCode: /Exited\s+(\d+\s+(days|weeks|months|hours|minutes))\s+ago/,
         created: /Created/
     };
 
@@ -15,6 +15,7 @@ export function translateStatus(status: string): string {
         days: 'días',
         weeks: 'semanas',
         months: 'meses',
+        hours: 'horas',
         minutes: 'minutos'
     };
 
@@ -24,22 +25,22 @@ export function translateStatus(status: string): string {
 
     let match = status.match(patterns.up);
     if (match) {
-        return `Funcionando desde hace ${match[1].replace(/(days|weeks|months|minutes)/g, translateTimeUnit)}`;
+        return `Funcionando desde hace ${match[1].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
     }
 
     match = status.match(patterns.exited);
     if (match) {
-        return `Detenido desde hace ${match[2].replace(/(days|weeks|months|minutes)/g, translateTimeUnit)}`;
+        return `Detenido desde hace ${match[2].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
     }
 
     match = status.match(patterns.exitedWithoutCode);
     if (match) {
-        return `Contenedor detenido desde ${match[1].replace(/(days|weeks|months|minutes)/g, translateTimeUnit)}`;
+        return `Contenedor detenido desde ${match[1].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
     }
 
     match = status.match(patterns.created);
     if (match) {
-        return `Contenedor solamente creado <.<`;
+        return `Contenedor solamente creado`;
     }
 
     return status;
