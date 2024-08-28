@@ -3,8 +3,9 @@
     border-radius: 0;
     padding: 1em !important;
     margin: 16px ;
-    width: 240px !important;
-    height: 240px !important; /* Altura fija para asegurar la alineación */
+    width: 232px !important;
+    max-width: 232px !important;
+    height: 235px !important; /* Altura fija para asegurar la alineación */
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Espacio uniforme entre elementos */
