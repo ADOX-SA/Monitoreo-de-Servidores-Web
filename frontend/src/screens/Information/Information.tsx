@@ -40,15 +40,17 @@ const Information: React.FC<ContainerInformationProps> = ({ data }) => {
 
   return (
     <Container customClassNames={styles.conteiner} fullWidth>
-      <Divider />
+      <Divider/>
       <Spacer/>
-      <Paragraph customClassNames={styles.nameContainer}>{`<${capitalizeFirstLetter(data.name)}>`} <Icon name='shippingbox'></Icon></Paragraph>
-      <Spacer/>
-      <Container>{`Contenedores en total ${data.snapshots[0].containers.length}`}</Container>
+      <Container padding="none" alignItems='center'>
+        <Icon name='shippingbox' size="medium"/>
+        <Paragraph customClassNames={styles.nameContainer}>{`<${capitalizeFirstLetter(data.name)}>`}</Paragraph>
+      </Container>
+      <Paragraph size="large">Contenedores: <strong>{data.snapshots[0].containers.length}</strong></Paragraph>
       <Container justifyContent='center' display='flex'>
-        <Paragraph>{`Ejecutandose: ${data.snapshots[0].runningContainerCount}`}</Paragraph>
+        <Paragraph size="medium">Ejecutandose: <strong>{data.snapshots[0].runningContainerCount.toString()}</strong></Paragraph>
         <Spacer/>
-        <Paragraph>{`Detenidos: ${data.snapshots[0].stoppedContainerCount}`}</Paragraph>
+        <Paragraph size="medium">Detenidos: <strong>{data.snapshots[0].stoppedContainerCount.toString()}</strong></Paragraph>
       </Container>
       <Card data={data}/>
     </Container>

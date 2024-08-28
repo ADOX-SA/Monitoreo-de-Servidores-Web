@@ -90,7 +90,11 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
               display='flex' 
               justifyContent='center' 
               padding="none"
-              fullWidth><strong>{`${capitalizeFirstLetter(extractKeyword(container.name))}`}</strong></Container>
+              fullWidth>
+                <Paragraph align='center' size="large" bold>
+                  {`${capitalizeFirstLetter(extractKeyword(container.name))}`}
+                </Paragraph>
+                </Container>
             <Spacer/>
             <Container customClassNames={styles.items} >
                 <Paragraph>

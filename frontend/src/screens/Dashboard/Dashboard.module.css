@@ -4,4 +4,5 @@
     justify-content: center; /* Centrar horizontalmente */
     align-items: center; /* Centrar verticalmente */
     padding: 1rem;
+    background: rgba(233, 233, 233, 0.507);
 }

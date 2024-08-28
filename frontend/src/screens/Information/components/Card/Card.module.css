@@ -3,14 +3,15 @@
     border-radius: 1em;
     padding: 1em !important;
     margin: 16px ;
-    width: 250px !important;
-    height: 180px !important; /* Altura fija para asegurar la alineación */
+    width: 240px !important;
+    height: 150px !important; /* Altura fija para asegurar la alineación */
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Espacio uniforme entre elementos */
     align-items: center; /* Alinea los elementos horizontalmente */
     white-space: normal !important; /* Permite el salto de línea en el texto */
     display: inline-block !important;
+    background: rgb(255, 255, 255);
 }
 
 .items {

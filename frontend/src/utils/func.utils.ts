@@ -25,22 +25,22 @@ export function translateStatus(status: string): string {
 
     let match = status.match(patterns.up);
     if (match) {
-        return `Funcionando desde hace ${match[1].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
+        return `Hace ${match[1].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
     }
 
     match = status.match(patterns.exited);
     if (match) {
-        return `Detenido desde hace ${match[2].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
+        return `Hace ${match[2].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
     }
 
     match = status.match(patterns.exitedWithoutCode);
     if (match) {
-        return `Contenedor detenido desde ${match[1].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
+        return `Hace ${match[1].replace(/(days|weeks|months|hours|minutes)/g, translateTimeUnit)}`;
     }
 
     match = status.match(patterns.created);
     if (match) {
-        return `Contenedor solamente creado`;
+        return `Contenedor creado`;
     }
 
     return status;

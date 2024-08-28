@@ -5,7 +5,7 @@ import { Dashboard } from '../Dashboard';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Title } from '../Title';
-import { Spacer } from '@adoxdesarrollos/designsystem-2';
+import { Container, Spacer } from '@adoxdesarrollos/designsystem-2';
 import axios from 'axios';
 
 type Data = {
@@ -33,13 +33,14 @@ const  Initiation = () => {
   }, []);
 
   return (
-    <div>
+    <Container fullWidth>
         <Header/>
         <Spacer/>
         <Title/>
         <Dashboard volume={data} />
+        <Spacer/>
         <Footer/>
-    </div>
+    </Container>
   );
 }
 
