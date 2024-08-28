@@ -1,6 +1,6 @@
-import { Container, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
+import { Container, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
 import styles from './Card.module.css';
-import { capitalizeFirstLetter, translateStatus } from '@/utils/func.utils';
+import { capitalizeFirstLetter, extractKeyword, translateStatus } from '@/utils/func.utils';
 import { useEffect, useState } from 'react';
 
 type Containers={
@@ -85,8 +85,14 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
     <Container>
         {containers.map((container) => (
         <Container key={container.name + '-name'} customClassNames={styles.card}>
-            <Paragraph key={container.name + '-name'} className={styles.name}><strong>{`${capitalizeFirstLetter(container.name)}`}</strong></Paragraph>
-            <Container customClassNames={styles.items}>
+            <Container 
+              key={container.name + '-name'} 
+              display='flex' 
+              justifyContent='center' 
+              padding="none"
+              fullWidth><strong>{`${capitalizeFirstLetter(extractKeyword(container.name))}`}</strong></Container>
+            <Spacer/>
+            <Container customClassNames={styles.items} >
                 <Paragraph>
                     {container.state === "running" ? (
                         <Icon color='green' name='checkmark' size="extra-large" />

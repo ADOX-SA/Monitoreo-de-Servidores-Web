@@ -1,26 +1,16 @@
 .card {
     border: 1px solid #000000;
     border-radius: 1em;
-    padding: 16px !important;
-    margin: 16px;
+    padding: 1em !important;
+    margin: 16px ;
     width: 250px !important;
-    max-width: 250px !important;
-    height: 180px !important;
-    max-height: auto;
-    display: inline-block !important;
-    overflow: hidden; /* Oculta el contenido que excede el alto máximo */
-    box-sizing: border-box; /* Incluye padding y border en el tamaño total */
-}
-
-.name {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400 !important;
-    font-size: 16px !important;
-    text-align: center !important;
-    color: #000000;
+    height: 180px !important; /* Altura fija para asegurar la alineación */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Espacio uniforme entre elementos */
+    align-items: center; /* Alinea los elementos horizontalmente */
     white-space: normal !important; /* Permite el salto de línea en el texto */
-    overflow: visible !important; /* Muestra el contenido incluso si excede el contenedor */
-    display: block !important; /* Asegura que el texto ocupe varias líneas si es necesario */
+    display: inline-block !important;
 }
 
 .items {
@@ -33,7 +23,4 @@
     font-size: 20px !important;
     text-align: center;
     color: #000000;
-    overflow: hidden; /* Oculta el texto que excede el contenedor */
-    text-overflow: ellipsis; /* Muestra '...' si el texto es demasiado largo */
-    display: block !important; /* Asegura que el texto ocupe una línea */
 }
