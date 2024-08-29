@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  monitordeservidores_web:
+    platform: amd64
+    container_name: monitordeservidores_web
+    restart: always
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "3000:3000"
+networks:
+  default:
+    external: true
+    name: nginx-proxy-manager_default
