@@ -1,6 +1,6 @@
 import { Container, Divider, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
 import styles from './Card.module.css';
-import { capitalizeFirstLetter, extractKeyword, translateStatus } from '@/utils/func.utils';
+import { capitalizeFirstLetter, extractKeyword, playSound, translateStatus } from '@/utils/func.utils';
 import { useEffect, useState } from 'react';
 
 type Containers={
@@ -45,17 +45,7 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
   const [containers, setContainers] = useState<Containers[]>([]);
   const [alertedContainers, setAlertedContainers] = useState<string[]>([]);
 
-  const playSound = (): Promise<void> => {
-      return new Promise((resolve, reject) => {
-        const audio = new Audio('/audio/Alarma.mp3');
-        audio.play()
-          .then(() => resolve())
-          .catch(error => {
-            console.error('Error al reproducir el sonido:', error);
-            reject(error);
-          });
-      });
-    };
+
     
     const handlePlaySound = async () => {
       await playSound();

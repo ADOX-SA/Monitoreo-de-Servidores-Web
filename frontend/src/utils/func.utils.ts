@@ -61,3 +61,15 @@ export const extractKeyword = (name: string): string => {
     // Retorna el nombre original si no se encuentra ninguna palabra clave
     return name;
 };
+
+export const playSound = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        const audio = new Audio('/audio/Alarma.mp3');
+        audio.play()
+        .then(() => resolve())
+        .catch(error => {
+            console.error('Error al reproducir el sonido:', error);
+            reject(error);
+        });
+    });
+};
