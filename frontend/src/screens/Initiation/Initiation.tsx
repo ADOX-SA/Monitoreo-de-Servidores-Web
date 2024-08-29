@@ -7,6 +7,7 @@ import { Footer } from '../Footer';
 import { Title } from '../Title';
 import { Container, Spacer } from '@adoxdesarrollos/designsystem-2';
 import axios from 'axios';
+import { ServersFallen } from '../ServersFallen';
 
 type Data = {
   id: string;
@@ -37,6 +38,7 @@ const  Initiation = () => {
         <Header/>
         <Spacer/>
         <Title/>
+        <ServersFallen volume={data}/>
         <Dashboard volume={data} />
         <Spacer/>
         <Footer/>

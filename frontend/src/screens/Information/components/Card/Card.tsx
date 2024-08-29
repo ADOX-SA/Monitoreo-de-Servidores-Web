@@ -76,7 +76,6 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
     useEffect(() => {
         containers.forEach(c => {
           if (c.state === 'exited' && !alertedContainers.includes(c.name)) {
-            alert(`El contenedor ${c.name} está detenido.`);
             setAlertedContainers(prev => [...prev, c.name]);
             handlePlaySound();
           } else if (c.state === 'running') {
@@ -100,13 +99,12 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
                   {`${capitalizeFirstLetter(extractKeyword(container.name))}`}
                 </Paragraph>
                 </Container>
-            <Spacer/>
             <Container customClassNames={styles.items} >
                 <Paragraph>
                     {container.state === "running" ? (
                         <Icon color='green' name='checkmark' size="extra-large" />
                     ) : (
-                        <Icon color='red' name='warningsign' size="extra-large" />
+                        <Icon color='red' name='warning' size="extra-large" />
                     )}
                 </Paragraph>
               </Container>

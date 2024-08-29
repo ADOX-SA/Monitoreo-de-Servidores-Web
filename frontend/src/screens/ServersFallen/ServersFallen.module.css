@@ -1,0 +1,17 @@
+.body{
+    background: rgba(233, 233, 233, 0.507) !important;
+}
+
+.item {
+    flex: auto;
+    margin: 10px;
+    text-align: center;
+}
+
+.name{
+    font-size: 24px !important;
+}
+
+.subTitle{
+    font-size: xx-large !important;
+}
