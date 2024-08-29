@@ -35,13 +35,13 @@ const ServersFallen: React.FC<DataProps> = ({ volume }) => {
                 <Paragraph customClassNames={styles.subTitle} bold>
                     Servidores Caidos
                 </Paragraph>
-                <Icon name='eye'/>
+                <Icon size="extra-large" color='red' name='warningsign'/> 
             </Container>
-            <Container flexDirection="row" padding="none" fullWidth>
+            <Container padding="none">
                 {nonRunningContainers.map((container, index) => (
-                    <Container key={index} customClassNames={styles.item}>
-                        <Paragraph size="large" customClassNames={styles.name} bold>
-                            <Icon size="medium" color='red' name='warningsign'/> {container.name}
+                    <Container key={index} customClassNames={styles.item} >
+                        <Paragraph size="small" bold>
+                            {container.name}
                         </Paragraph>
                     </Container>
                 ))}
