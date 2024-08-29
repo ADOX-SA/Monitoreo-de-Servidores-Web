@@ -1,6 +1,6 @@
 # Arquitectura del Proyecto:
 
-En esta arquitectura, cAdvisor obtiene la información de los contenedores del servidor 1, como se muestra en la imagen. Esta información es proporcionada a Prometheus. Desde el backend, realizamos consultas a Prometheus para obtener la información necesaria sobre el estado de los servidores, verificando si están activos o caídos. Esta información se refleja en el frontend para su visualización.
+En esta arquitectura, uso la api de Portainer dandome la información de los contenedores del servidor, como se muestra en la imagen. Desde el backend, realizamos consultas para obtener la información necesaria sobre el estado de los servidores, verificando si están activos o caídos. Esta información se refleja en el frontend para su visualización.
 
 ![image](image.png)
 
@@ -16,3 +16,7 @@ En esta arquitectura, cAdvisor obtiene la información de los contenedores del s
 - `docker-compose up -d`: Crea y levanta las imágenes en segundo plano.
 - `docker ps`: Verifica qué contenedores están en ejecución.
 - `docker-compose ps`: Muestra los contenedores en ejecución de una forma más sencilla.
+
+## Api Portainer:
+
+- `https://portainer.example.com/api/endpoints`: Te trae información completa de los contenedores.

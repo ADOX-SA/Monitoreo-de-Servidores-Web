@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const url = process.env.URL_PORTAINER;
 const token = process.env.BEARER_TOKEN;
+const prometheus = process.env.PROMETHEUS;
 
 const instance = axios.create({
     httpsAgent: new https.Agent({  
@@ -79,7 +80,131 @@ interface ContainerInfo {
     Snapshots: Snapshot[];
 }
 
+const getTotalCPUCores = async () => {
+    try {
+        // Consulta para obtener el número total de núcleos de CPU
+        const response = await axios.get(`${prometheus}/api/v1/query?query=node_cpu_seconds_total{mode="user"}`);
+        const totalCores = parseFloat(response.data.data.result[0]?.value[1] || '1'); // Asegúrate de tener un valor predeterminado
 
+        return totalCores;
+    } catch (error) {
+        console.error('Error fetching total CPU cores from Prometheus:', error);
+        return 1; // Valor predeterminado en caso de error
+    }
+};
+
+const convertBytesToMB = (bytes: string) => (parseFloat(bytes) / (1024 ** 2)).toFixed(2);
+
+// Función para obtener métricas de Prometheus para un contenedor específico
+const getContainerMetrics = async (containerName: string) => {
+    try {
+        const totalCores = await getTotalCPUCores();
+
+        const cpuQuery = `container_cpu_usage_seconds_total{name="${containerName}"}`;
+        const memoryQuery = `container_memory_usage_bytes{name="${containerName}"}`;
+        const networkQuery = `container_network_receive_bytes_total{name="${containerName}"}`;
+
+        const cpuResponse = await instance.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(cpuQuery)}`);
+        const memoryResponse = await instance.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(memoryQuery)}`);
+        const networkResponse = await instance.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(networkQuery)}`);
+
+        const cpuValue = parseFloat(cpuResponse.data.data.result[0]?.value[1] || '0');
+        const cpuUsagePercentage = (cpuValue * 100) / (totalCores * 60);
+
+        return {
+            cpu: cpuUsagePercentage.toFixed(2),
+            memory: convertBytesToMB(memoryResponse.data.data.result[0]?.value[1] || '0'),
+            network: convertBytesToMB(networkResponse.data.data.result[0]?.value[1] || '0'),
+        };
+    } catch (error) {
+        console.error('Error fetching container metrics from Prometheus:', error);
+        return null;
+    }
+};
+
+
+
+// Mapeo de los contenedores con las métricas
+export const mapContainersWithMetrics = async (response: any) => {
+    const mappedContainers = await Promise.all(
+        response.data.map(async (container: any) => ({
+            id: container.Id,
+            name: container.Name.replace('/', ''), // Elimina el prefijo '/' si está presente
+            status: container.Status,
+            snapshots: await Promise.all(
+                container.Snapshots.map(async (snapshot: any) => ({
+                    time: snapshot.Time,
+                    dockerVersion: snapshot.DockerVersion,
+                    swarm: snapshot.Swarm,
+                    totalCPU: snapshot.TotalCPU,
+                    totalMemory: snapshot.TotalMemory,
+                    runningContainerCount: snapshot.RunningContainerCount,
+                    stoppedContainerCount: snapshot.StoppedContainerCount,
+                    healthyContainerCount: snapshot.HealthyContainerCount,
+                    unhealthyContainerCount: snapshot.UnhealthyContainerCount,
+                    volumeCount: snapshot.VolumeCount,
+                    imageCount: snapshot.ImageCount,
+                    serviceCount: snapshot.ServiceCount,
+                    stackCount: snapshot.StackCount,
+                    containers: await Promise.all(
+                        snapshot.DockerSnapshotRaw.Containers.map(async (conteiner: any) => {
+                            const metrics = await getContainerMetrics(conteiner.Names[0].replace('/', ''));
+                            return {
+                                //id: c.Id,
+                                name: conteiner.Names[0].replace('/', ''), // Elimina el prefijo '/' si está presente
+                                // Mapea las métricas obtenidas desde Prometheus
+                                metrics: metrics || {
+                                    cpu: '0',
+                                    memory: '0',
+                                    network: '0',
+                                },
+                                state: conteiner.State,
+                                status: conteiner.Status,
+                                /*
+                                image: conteiner.Image,
+                                imageId: c.ImageID,
+                                command: c.Command,
+                                created: c.Created,
+                                ports: c.Ports.map(port => ({
+                                    IP: port.IP,
+                                    privatePort: port.PrivatePort,
+                                    publicPort: port.PublicPort,
+                                    type: port.Type,
+                                })),
+                                networkSettings: Object.values(c.NetworkSettings.Networks).map(network => ({
+                                    ipAddress: network.IPAddress,
+                                    networkID: network.NetworkID,
+                                    endpointID: network.EndpointID,
+                                    gateway: network.Gateway,
+                                    macAddress: network.MacAddress,
+                                })),
+                                */
+                            };
+                        })
+                    ),
+                }))
+            ),
+        }))
+    );
+
+    return mappedContainers;
+};
+
+// TODO:Función para obtener información de los contenedores
+export const getContainerInfo = async () => {
+    try {
+        const response = await instance.get(`${url}/api/endpoints`);
+        const enrichedData = await mapContainersWithMetrics(response);
+
+        return enrichedData;
+    } catch (error) {
+        console.error('Error fetching container information:', error);
+        throw new Error('Error fetching container information');
+    }
+};
+
+// Funcion anterior...
+/*
 // TODO:Función para obtener información de los contenedores
 export const getContainerInfo = async () => {
     try {
@@ -106,20 +231,19 @@ export const getContainerInfo = async () => {
                     containers: snapshot.DockerSnapshotRaw.Containers.map(conteiner => ({
                         //id: c.Id,
                         name: conteiner.Names[0].replace('/', ''), // Elimina el prefijo '/' si está presente
+                        //POR ACA SE PODRIA HACER LA CONSULTA DE PROMETHEUS Y QUE MAPPE LAS METRICAS COMO RAM, CPU  Y RED
                         //image: conteiner.Image,
                         //imageId: c.ImageID,
                         //command: c.Command,
                         //created: c.Created,
-                        /*
                         ports: c.Ports.map(port => ({
                             IP: port.IP,
                             privatePort: port.PrivatePort,
                             publicPort: port.PublicPort,
                             type: port.Type,
-                        })),*/
+                        })),
                         state: conteiner.State,
                         status: conteiner.Status,
-                        /*
                         networkSettings: Object.values(c.NetworkSettings.Networks).map(network => ({
                             ipAddress: network.IPAddress,
                             networkID: network.NetworkID,
@@ -127,7 +251,7 @@ export const getContainerInfo = async () => {
                             gateway: network.Gateway,
                             macAddress: network.MacAddress,
                         })),
-                        */
+                        
                     }))
                 }))
             }));
@@ -142,3 +266,4 @@ export const getContainerInfo = async () => {
         throw new Error('Error fetching container information');
     }
 };
+*/

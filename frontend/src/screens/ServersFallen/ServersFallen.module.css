@@ -1,0 +1,32 @@
+.body{
+    max-width: 100% !important;
+    background: rgba(233, 233, 233, 0.507) !important;
+}
+
+.item {
+    border: 1px solid #000000;
+    border-radius: 0;
+    padding: 1em !important;
+    margin: 16px ;
+    width: auto !important;
+    height: auto !important; /* Altura fija para asegurar la alineación */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Espacio uniforme entre elementos */
+    align-items: center; /* Alinea los elementos horizontalmente */
+    white-space: normal !important; /* Permite el salto de línea en el texto */
+    display: inline-block !important;
+    background: rgb(255, 255, 255);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.subTitle{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400 !important;
+    font-size: 42px !important;
+    color: #000000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block !important;
+}
