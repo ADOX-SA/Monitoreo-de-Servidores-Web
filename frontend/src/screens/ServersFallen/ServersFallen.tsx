@@ -26,20 +26,29 @@ type DataProps = {
 };
 
 const ServersFallen: React.FC<DataProps> = ({ volume }) => {
+    const [alertedContainers, setAlertedContainers] = useState<string[]>([]);
     const [nonRunningContainers, setNonRunningContainers] = useState<Containers[]>([]);
 
-    const handlePlaySound = async () => {
-        await playSound();
-    };
-
     useEffect(() => {
-        handlePlaySound();
         const updatedNonRunningContainers = volume.flatMap(container => 
             container.snapshots[0]?.containers.filter(c => c.state !== 'running') || []
         );
         setNonRunningContainers(updatedNonRunningContainers);
     }, [volume]);
     
+    const handlePlaySound = async () => {
+        await playSound();
+    };
+
+    useEffect(() => {
+        nonRunningContainers.forEach(c =>{
+            if (!alertedContainers.includes(c.name) && c.state !== 'running') {
+                setAlertedContainers(prev => [...prev, c.name]);
+                handlePlaySound();
+            };
+        });
+    }, [nonRunningContainers, alertedContainers]);
+
     return (
         <Container customClassNames={styles.body}>
             <Divider />
