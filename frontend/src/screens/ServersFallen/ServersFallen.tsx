@@ -1,5 +1,5 @@
 'use client';
-import { Container, Divider, Icon, List, Paragraph } from '@adoxdesarrollos/designsystem-2';
+import { Container, Divider, Icon, List, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
 import styles from './ServersFallen.module.css';
 import { useEffect, useState } from 'react';
 import { playSound } from '@/utils/func.utils';
@@ -50,13 +50,14 @@ const ServersFallen: React.FC<DataProps> = ({ volume }) => {
     }, [nonRunningContainers, alertedContainers]);
 
     return (
-        <Container customClassNames={styles.body}>
+        <Container padding="none" customClassNames={styles.body} fullWidth>
             <Container>
                 <Divider />
-                    <Paragraph align='center' customClassNames={styles.subTitle}>Servidores Caidos</Paragraph>
+                <Spacer/>
                     <Container padding="none" justifyContent='center' display='flex' fullWidth>
-                        <Icon size="extra-large" color='red' name='warningsign'/> 
+                        <Icon size="large" color='red' name='warningsign'/> 
                     </Container>
+                    <Paragraph align='center' customClassNames={styles.subTitle}>{`<Servidores Caidos>`}</Paragraph>
                 <Container padding="none">
                     {nonRunningContainers.map((container, index) => (
                         <Container key={index} customClassNames={styles.item} >
