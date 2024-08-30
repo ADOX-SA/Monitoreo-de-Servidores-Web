@@ -51,19 +51,21 @@ const ServersFallen: React.FC<DataProps> = ({ volume }) => {
 
     return (
         <Container customClassNames={styles.body}>
-            <Divider />
-            <Container alignItems="center" flexDirection="column" fullWidth>
-                <Paragraph customClassNames={styles.subTitle}>Servidores Caidos</Paragraph>
-                <Icon size="extra-large" color='red' name='warningsign'/> 
-            </Container>
-            <Container padding="none">
-                {nonRunningContainers.map((container, index) => (
-                    <Container key={index} customClassNames={styles.item} >
-                        <Paragraph size="large" bold>
-                            {container.name}
-                        </Paragraph>
+            <Container>
+                <Divider />
+                    <Paragraph align='center' customClassNames={styles.subTitle}>Servidores Caidos</Paragraph>
+                    <Container padding="none" justifyContent='center' display='flex' fullWidth>
+                        <Icon size="extra-large" color='red' name='warningsign'/> 
                     </Container>
-                ))}
+                <Container padding="none">
+                    {nonRunningContainers.map((container, index) => (
+                        <Container key={index} customClassNames={styles.item} >
+                            <Paragraph size="large" bold>
+                                {container.name}
+                            </Paragraph>
+                        </Container>
+                    ))}
+                </Container>
             </Container>
         </Container>
     );
