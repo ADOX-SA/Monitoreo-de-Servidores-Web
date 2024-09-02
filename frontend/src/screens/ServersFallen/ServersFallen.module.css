@@ -1,5 +1,4 @@
 .body{
-    max-width: 100% !important;
     background: rgba(233, 233, 233, 0.507) !important;
 }
 
@@ -9,15 +8,19 @@
     padding: 1em !important;
     margin: 16px ;
     width: auto !important;
-    height: auto !important; /* Altura fija para asegurar la alineación */
+    max-width: 250px;
+    font-size: 16px !important;
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Espacio uniforme entre elementos */
-    align-items: center; /* Alinea los elementos horizontalmente */
-    white-space: normal !important; /* Permite el salto de línea en el texto */
     display: inline-block !important;
-    background: rgb(255, 255, 255);
+    background: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.lastItem {
+  color: #ffffff !important;
+  background-color: #ba1a1a;
 }
 
 .subTitle{

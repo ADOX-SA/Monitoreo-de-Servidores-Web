@@ -4,7 +4,7 @@ import styles  from './Footer.module.css';
 
 function Footer() {
   return (
-    <Container customClassNames={styles.footerLine} fullWidth/>
+    <Container customClassNames={styles.footerLine} padding="none" fullWidth/>
   )
 }
 

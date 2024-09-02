@@ -39,7 +39,6 @@ const  Initiation = () => {
         <Title/>
         <ServersFallen volume={data}/>
         <Dashboard volume={data} />
-        <Spacer/>
         <Footer/>
     </Container>
   );

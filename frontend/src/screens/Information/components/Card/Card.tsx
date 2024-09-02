@@ -1,4 +1,4 @@
-import { Container, Divider, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
+import { Container, Divider, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
 import styles from './Card.module.css';
 import { capitalizeFirstLetter, extractKeyword, playSound, translateStatus } from '@/utils/func.utils';
 import { useEffect, useState } from 'react';

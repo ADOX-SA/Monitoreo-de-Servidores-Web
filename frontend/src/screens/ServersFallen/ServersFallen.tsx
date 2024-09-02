@@ -52,20 +52,30 @@ const ServersFallen: React.FC<DataProps> = ({ volume }) => {
     return (
         <Container padding="none" customClassNames={styles.body} fullWidth>
             <Container>
-                <Divider />
-                <Spacer/>
-                    <Container padding="none" justifyContent='center' display='flex' fullWidth>
-                        <Icon size="large" color='red' name='warningsign'/> 
-                    </Container>
-                    <Paragraph align='center' customClassNames={styles.subTitle}>{`<Servidores Caidos>`}</Paragraph>
-                <Container padding="none">
-                    {nonRunningContainers.map((container, index) => (
-                        <Container key={index} customClassNames={styles.item} >
-                            <Paragraph size="large" bold>
-                                {container.name}
-                            </Paragraph>
+                <Container>
+                    <Divider />
+                    <Spacer/>
+                        <Container padding="none" justifyContent='center' display='flex' fullWidth>
+                            <Icon size="large" color='red' name='warningsign'/> 
                         </Container>
-                    ))}
+                        <Paragraph align='center' customClassNames={styles.subTitle}>{`<Servidores Caidos>`}</Paragraph>
+                        <Container padding="none">
+                            {nonRunningContainers.map((container, index) => {
+                                const isLast = index === nonRunningContainers.length - 1;
+                                return (
+                                    <Container
+                                        key={index}
+                                        justifyContent='center'
+                                        customClassNames={`${styles.item} ${isLast ? styles.lastItem : ''}`} // Aplica una clase extra si es el último
+                                        padding="none"
+                                    >
+                                        <Paragraph bold>
+                                            {container.name}
+                                        </Paragraph>
+                                    </Container>
+                                );
+                            })}
+                        </Container>
                 </Container>
             </Container>
         </Container>

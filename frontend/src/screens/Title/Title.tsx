@@ -4,9 +4,7 @@ import styles from './Title.module.css';
 
 function Title() {
   return (
-    <Container fullWidth>
-      <Heading align="center" size="large" className={styles.title}>Monitoreo de Desarrollo</Heading>
-    </Container>
+      <Heading align="center" className={styles.title}>Monitoreo de Desarrollo</Heading>
   )
 };
 
