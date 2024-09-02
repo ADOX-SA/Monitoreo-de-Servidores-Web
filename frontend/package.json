@@ -10,20 +10,15 @@
   },
   "dependencies": {
     "@adoxdesarrollos/designsystem-2": "^0.7.2",
-    "@emotion/react": "^11.13.0",
-    "@emotion/styled": "^11.13.0",
-    "@mui/material": "^5.16.7",
-    "axios": "^1.7.3",
-    "chart.js": "^4.4.3",
+    "@types/socket.io-client": "^3.0.0",
     "next": "14.2.5",
     "react": "^18",
-    "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "22.5.2",
     "@types/react": "^18",
-    "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "typescript": "^5"
