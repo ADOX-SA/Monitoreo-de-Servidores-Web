@@ -89,15 +89,22 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
                   {`${capitalizeFirstLetter(extractKeyword(container.name))}`}
                 </Paragraph>
                 </Container>
-            <Container customClassNames={styles.items} >
+                <Container customClassNames={styles.items}>
                 <Paragraph>
-                    {container.state === "running" ? (
-                        <Icon color='green' name='checkmark' size="extra-large" />
-                    ) : (
-                        <Icon color='red' name='warning' size="extra-large" />
-                    )}
+                  {(() => {
+                    switch (container.state) {
+                      case "running":
+                        return <Icon color='green' name='checkmark' size="extra-large" />;
+                      case "exited":
+                        return <Icon color='red' name='warning' size="extra-large" />;
+                      case "created":
+                        return <Icon color='cyan' name='add' size="extra-large" />;
+                      default:
+                        return <div>Otro estado</div>;
+                    }
+                  })()}
                 </Paragraph>
-              </Container>
+                </Container>
             <Paragraph customClassNames={styles.description}>{translateStatus(container.status)}</Paragraph>
             <Container fullWidth>
               <Divider/>
