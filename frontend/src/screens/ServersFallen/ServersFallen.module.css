@@ -5,7 +5,7 @@
 .item {
     border: 1px solid #000000;
     border-radius: 0;
-    padding: 1em !important;
+    padding: 8px !important;
     margin: 16px ;
     width: auto !important;
     max-width: 250px;
@@ -14,13 +14,29 @@
     flex-direction: column;
     justify-content: space-between; /* Espacio uniforme entre elementos */
     display: inline-block !important;
-    background: #ffffff;
+    background-color: #f5f5f5;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
 .lastItem {
-  color: #ffffff !important;
+  color: #ffffff;
   background-color: #ba1a1a;
+  animation: fadeInOut 5s ease-in-out; /* Aplica la animación */
 }
 
 .subTitle{
