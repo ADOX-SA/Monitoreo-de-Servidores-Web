@@ -1,6 +1,6 @@
-import { Container, Divider, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
+import { Container, Divider, Icon, Paragraph } from '@adoxdesarrollos/designsystem-2';
 import styles from './Card.module.css';
-import { capitalizeFirstLetter, extractKeyword, translateStatus } from '@/utils/func.utils';
+import { capitalizeFirstLetter, extractKeyword, playSound, translateStatus } from '@/utils/func.utils';
 import { useEffect, useState } from 'react';
 
 type Containers={
@@ -41,26 +41,9 @@ type ContainerInformationProps = {
 };
 
 const Card: React.FC<ContainerInformationProps> = ({ data }) => {
-  const [hasPlayedSound, setHasPlayedSound] = useState(false);
+  //const [hasPlayedSound, setHasPlayedSound] = useState(false);
   const [containers, setContainers] = useState<Containers[]>([]);
-  const [alertedContainers, setAlertedContainers] = useState<string[]>([]);
-
-  const playSound = (): Promise<void> => {
-      return new Promise((resolve, reject) => {
-        const audio = new Audio('/audio/Alarma.mp3');
-        audio.play()
-          .then(() => resolve())
-          .catch(error => {
-            console.error('Error al reproducir el sonido:', error);
-            reject(error);
-          });
-      });
-    };
-    
-    const handlePlaySound = async () => {
-      await playSound();
-      setHasPlayedSound(true);
-    };
+  //const [alertedContainers, setAlertedContainers] = useState<string[]>([]);
 
     useEffect(() => {
       // Ordena los contenedores con estado 'exited' o 'created' al principio
@@ -73,7 +56,15 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
     setContainers(sortedContainers);
   }, [data.snapshots[0].containers]);
 
-    useEffect(() => {
+/*  
+    const handlePlaySound = async () => {
+      await playSound();
+      setHasPlayedSound(true);
+    };
+
+*/
+
+/*        useEffect(() => {
         containers.forEach(c => {
           if (c.state === 'exited' && !alertedContainers.includes(c.name)) {
             setAlertedContainers(prev => [...prev, c.name]);
@@ -83,8 +74,7 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
           }
         });
       }, [containers, alertedContainers]);
-
-      
+*/    
     return (
     <Container>
         {containers.map((container) => (

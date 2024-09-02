@@ -5,7 +5,7 @@ import { Dashboard } from '../Dashboard';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Title } from '../Title';
-import { Container, Spacer } from '@adoxdesarrollos/designsystem-2';
+import { Container } from '@adoxdesarrollos/designsystem-2';
 import axios from 'axios';
 import { ServersFallen } from '../ServersFallen';
 
@@ -16,16 +16,19 @@ type Data = {
   snapshots: [];
 };
 
-const  Initiation = () => {
-  const [data, setdata] = useState<Data[]>([]);
+const Initiation = () => {
+  const [data, setData] = useState<Data[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         const response = await axios.get('http://localhost:5000/api/containers/all');
-        setdata(response.data);
+        setData(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -33,14 +36,21 @@ const  Initiation = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className={styles.loadingScreen}>
+        <div className={styles.loader}></div>
+        <p>Cargando datos...</p>
+      </div>
+    );
+  }
+
   return (
     <Container fullWidth>
         <Header/>
-        <Spacer/>
         <Title/>
         <ServersFallen volume={data}/>
         <Dashboard volume={data} />
-        <Spacer/>
         <Footer/>
     </Container>
   );

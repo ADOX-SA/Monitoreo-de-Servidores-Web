@@ -4,7 +4,7 @@ import { Container } from "@adoxdesarrollos/designsystem-2";
 
 export default function Home() {
   return (
-    <Container>
+    <Container padding="none">
       <Initiation/>
     </Container>
   );

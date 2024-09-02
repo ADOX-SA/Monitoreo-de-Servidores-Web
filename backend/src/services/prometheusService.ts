@@ -80,36 +80,37 @@ interface ContainerInfo {
     Snapshots: Snapshot[];
 }
 
-const getTotalCPUCores = async () => {
+const getServiceCPUUsagePercentage = async (serviceName: string) => {
     try {
-        // Consulta para obtener el número total de núcleos de CPU
-        const response = await axios.get(`${prometheus}/api/v1/query?query=node_cpu_seconds_total{mode="user"}`);
-        const totalCores = parseFloat(response.data.data.result[0]?.value[1] || '1'); // Asegúrate de tener un valor predeterminado
+        const cpuUsageQuery = `rate(container_cpu_usage_seconds_total{name="${serviceName}"}[5m])`;
+        const cpuUsageResponse = await axios.get(`${prometheus}/api/v1/query?query=${cpuUsageQuery}`);
+        const cpuUsageRate = parseFloat(cpuUsageResponse.data.data.result[0]?.value[1] || '0');
 
-        return totalCores;
+        const totalCoresQuery = `count(node_cpu_seconds_total{mode="idle"})`;
+        const totalCoresResponse = await axios.get(`${prometheus}/api/v1/query?query=${totalCoresQuery}`);
+        const totalCores = parseFloat(totalCoresResponse.data.data.result[0]?.value[1] || '1');
+
+        const cpuUsagePercentage = (cpuUsageRate / totalCores) * 100;
+
+        return cpuUsagePercentage;
     } catch (error) {
-        console.error('Error fetching total CPU cores from Prometheus:', error);
-        return 1; // Valor predeterminado en caso de error
+        console.error('Error fetching CPU usage percentage from Prometheus:', error);
+        return 0; // Valor predeterminado en caso de error
     }
 };
 
 const convertBytesToMB = (bytes: string) => (parseFloat(bytes) / (1024 ** 2)).toFixed(2);
 
 // Función para obtener métricas de Prometheus para un contenedor específico
+/*
 const getContainerMetrics = async (containerName: string) => {
     try {
-        const totalCores = await getTotalCPUCores();
-
-        const cpuQuery = `container_cpu_usage_seconds_total{name="${containerName}"}`;
         const memoryQuery = `container_memory_usage_bytes{name="${containerName}"}`;
         const networkQuery = `container_network_receive_bytes_total{name="${containerName}"}`;
 
-        const cpuResponse = await instance.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(cpuQuery)}`);
         const memoryResponse = await instance.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(memoryQuery)}`);
         const networkResponse = await instance.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(networkQuery)}`);
-
-        const cpuValue = parseFloat(cpuResponse.data.data.result[0]?.value[1] || '0');
-        const cpuUsagePercentage = (cpuValue * 100) / (totalCores * 60);
+        const cpuUsagePercentage = await getServiceCPUUsagePercentage(containerName);
 
         return {
             cpu: cpuUsagePercentage.toFixed(2),
@@ -121,8 +122,29 @@ const getContainerMetrics = async (containerName: string) => {
         return null;
     }
 };
+*/
 
+const getContainerMetrics = async (containerName: string) => {
+    try {
+        const memoryQuery = `container_memory_usage_bytes{name="${containerName}"}`;
+        const networkQuery = `container_network_receive_bytes_total{name="${containerName}"}`;
 
+        const [cpuUsagePercentage, memoryResponse, networkResponse] = await Promise.all([
+            getServiceCPUUsagePercentage(containerName),
+            axios.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(memoryQuery)}`),
+            axios.get(`${prometheus}/api/v1/query?query=${encodeURIComponent(networkQuery)}`)
+        ]);
+
+        return {
+            cpu: cpuUsagePercentage.toFixed(2),
+            memory: convertBytesToMB(memoryResponse.data.data.result[0]?.value[1] || '0'),
+            network: convertBytesToMB(networkResponse.data.data.result[0]?.value[1] || '0'),
+        };
+    } catch (error) {
+        console.error('Error fetching container metrics from Prometheus:', error);
+        return null;
+    }
+};
 
 // Mapeo de los contenedores con las métricas
 export const mapContainersWithMetrics = async (response: any) => {
