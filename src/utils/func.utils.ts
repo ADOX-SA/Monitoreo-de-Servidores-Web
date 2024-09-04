@@ -48,7 +48,7 @@ export function translateStatus(status: string): string {
 
 export const extractKeyword = (name: string): string => {
     // Define las palabras clave que quieres buscar
-    const keywords = ["Api", "Web", "Back", "Front", "Socket", "Portainer agent", "Data tcp", "NetData", "Data", "Mensajeria", "Control V2", "Control ", "Simulation"];
+    const keywords = ["Api", "Web", "instrumental back","Back", "Front", "Socket", "Portainer agent", "Data tcp", "NetData", "Data", "Mensajeria", "Control V2", "Control ", "Simulation"];
     const lowercasedName = name.toLowerCase().replace(/_/g, ' ');
     
     // Busca la primera palabra clave que esté contenida en el nombre
