@@ -85,7 +85,7 @@ const Card: React.FC<ContainerInformationProps> = ({ data }) => {
               justifyContent='center' 
               padding="none"
               fullWidth>
-                <Paragraph align='center' size="large" bold>
+                <Paragraph align='center' color='purple' size="large" bold>
                   {`${capitalizeFirstLetter(extractKeyword(container.name))}`}
                 </Paragraph>
                 </Container>
