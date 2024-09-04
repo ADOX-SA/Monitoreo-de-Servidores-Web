@@ -59,6 +59,7 @@ const ServersFallen: React.FC<DataProps> = ({ volume }) => {
                             <Icon size="large" color='red' name='warningsign'/> 
                         </Container>
                         <Paragraph align='center' customClassNames={styles.subTitle}>{`<Servidores Caidos>`}</Paragraph>
+                        <Spacer/>
                         <Container padding="none">
                             {nonRunningContainers.map((container, index) => {
                                 const isLast = index === nonRunningContainers.length - 1;
