@@ -49,7 +49,11 @@ const Information: React.FC<ContainerInformationProps> = ({ data }) => {
       <Spacer/>
       <Container padding="none" alignItems='center'>
         <Icon name='shippingbox' size="medium"/>
-        <Paragraph customClassNames={styles.nameContainer}>{`<${capitalizeFirstLetter(data.name)}>`}</Paragraph>
+        <Paragraph customClassNames={styles.nameContainer}>
+          <Icon name='chevronLeft' size="small"/>
+          {`${capitalizeFirstLetter(data.name)}`}
+          <Icon name='chevronRight' size="small"/>
+          </Paragraph>
       </Container>
       <Paragraph size="large">Contenedores: <strong>{data.snapshots[0].containers.length}</strong></Paragraph>
       <Container justifyContent='center' display='flex'>

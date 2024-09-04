@@ -31,7 +31,7 @@ const ServersFallen: React.FC<DataProps> = ({ volume }) => {
 
     useEffect(() => {
         const updatedNonRunningContainers = volume.flatMap(container => 
-            container.snapshots[0]?.containers.filter(c => c.state !== 'running') || []
+            container.snapshots[0]?.containers.filter(c => c.state === 'exited') || []
         );
         setNonRunningContainers(updatedNonRunningContainers);
     }, [volume]);
@@ -42,7 +42,7 @@ const ServersFallen: React.FC<DataProps> = ({ volume }) => {
 
     useEffect(() => {
         nonRunningContainers.forEach(c =>{
-            if (!alertedContainers.includes(c.name) && c.state !== 'running') {
+            if (!alertedContainers.includes(c.name) && c.state === 'exited') {
                 setAlertedContainers(prev => [...prev, c.name]);
                 handlePlaySound();
             };
@@ -58,7 +58,11 @@ const ServersFallen: React.FC<DataProps> = ({ volume }) => {
                         <Container padding="none" justifyContent='center' display='flex' fullWidth>
                             <Icon size="large" color='red' name='warningsign'/> 
                         </Container>
-                        <Paragraph align='center' customClassNames={styles.subTitle}>{`<Servidores Caidos>`}</Paragraph>
+                        <Paragraph align='center' customClassNames={styles.subTitle}>
+                            <Icon name='chevronLeft' size="small"/>
+                            {`Servidores Caidos`}
+                            <Icon name='chevronRight' size="small"/>
+                            </Paragraph>
                         <Spacer/>
                         <Container padding="none">
                             {nonRunningContainers.map((container, index) => {
