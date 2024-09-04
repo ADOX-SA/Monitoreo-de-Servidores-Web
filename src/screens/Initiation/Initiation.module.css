@@ -1,22 +1,20 @@
-/* Initiation.module.css */
-
 .loadingScreen {
-    position: fixed; /* Mantiene la pantalla de carga fija en la pantalla */
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100vw; /* Ocupa toda la anchura de la pantalla */
-    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #f0f0f0; /* Color de fondo mientras carga */
-    z-index: 9999; /* Asegura que la pantalla de carga esté encima de todo */
+    background-color: #f0f0f0;
+    z-index: 9999;
   }
   
   .loader {
-    border: 16px solid #f3f3f3; /* Color gris claro */
-    border-top: 16px solid #6d38c2; /* Color azul */
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #6d38c2;
     border-radius: 50%;
     width: 220px;
     height: 220px;
