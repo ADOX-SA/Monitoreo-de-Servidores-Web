@@ -6,7 +6,7 @@ import { Dashboard } from '../Dashboard';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Title } from '../Title';
-import { Container } from '@adoxdesarrollos/designsystem-2';
+import { Container, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
 import { io, Socket } from 'socket.io-client';
 import { ServersFallen } from '../ServersFallen';
 
@@ -22,7 +22,6 @@ const Initiation = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Conéctate al servidor Socket.IO
     const socket: Socket = io('http://localhost:5000');
 
     socket.on('connect', () => {
@@ -45,9 +44,27 @@ const Initiation = () => {
 
   if (isLoading) {
     return (
-      <div className={styles.loadingScreen}>
-        <div className={styles.loader}></div>
-        <p>Cargando datos...</p>
+      <div className={styles.body}>
+        <div className={styles.container}>
+          <div className={styles.cube}>
+            <div className={`${styles.face} ${styles.front}`}></div>
+            <div className={`${styles.face} ${styles.back}`}></div>
+            <div className={`${styles.face} ${styles.right}`}></div>
+            <div className={`${styles.face} ${styles.left}`}></div>
+            <div className={`${styles.face} ${styles.top}`}></div>
+            <div className={`${styles.face} ${styles.bottom}`}></div>
+          </div>
+        </div>
+        <Spacer size="extra-large"/>
+        <Spacer size="extra-large"/>
+        <div className={styles.loading}>
+          <Paragraph className={styles.text}>Cargando contenedores</Paragraph>
+          <div className={styles.dots}>
+            <div className={styles.dot}></div>
+            <div className={styles.dot}></div>
+            <div className={styles.dot}></div>
+          </div>
+        </div>
       </div>
     );
   }
