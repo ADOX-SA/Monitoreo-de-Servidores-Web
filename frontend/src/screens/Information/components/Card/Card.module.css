@@ -1,0 +1,27 @@
+.card {
+    border: 1px solid #000000;
+    border-radius: 4px;
+    padding: 8px !important;
+    margin: 16px ;
+    width: 220px !important;
+    max-width: 220px !important;
+    height: 210px !important;
+    flex-direction: column;
+    justify-content: space-between; /* Espacio uniforme entre elementos */
+    align-items: center; /* Alinea los elementos horizontalmente */
+    display: inline-block !important;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.items {
+    text-align: center;
+}
+
+.description {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    text-align: center;
+    color: #000000;
+}

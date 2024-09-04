@@ -1,9 +1,11 @@
-import Dashboard from "./dashboard";
+"use client";
+import { Initiation } from "@/screens/Initiation";
+import { Container } from "@adoxdesarrollos/designsystem-2";
 
 export default function Home() {
   return (
-    <div>
-      <Dashboard/>
-    </div>
+    <Container padding="none">
+      <Initiation/>
+    </Container>
   );
-}
+};
