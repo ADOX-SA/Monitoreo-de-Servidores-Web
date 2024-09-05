@@ -6,7 +6,7 @@ import { Dashboard } from '../Dashboard';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Title } from '../Title';
-import { Container, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
+import { Container, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
 import { io, Socket } from 'socket.io-client';
 import { ServersFallen } from '../ServersFallen';
 
@@ -58,7 +58,11 @@ const Initiation = () => {
         <Spacer size="extra-large"/>
         <Spacer size="extra-large"/>
         <div className={styles.loading}>
-          <Paragraph className={styles.text}>Cargando contenedores</Paragraph>
+          <Paragraph className={styles.text}>
+            <Icon name='chevronLeft' size="small"/>
+            Cargando contenedores
+            <Icon name='chevronRight' size="small"/>
+            </Paragraph>
           <div className={styles.dots}>
             <div className={styles.dot}></div>
             <div className={styles.dot}></div>
