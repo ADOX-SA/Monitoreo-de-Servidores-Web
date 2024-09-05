@@ -82,6 +82,6 @@ const Initiation = () => {
         <Footer/>
     </Container>
   );
-}
+};
 
 export default Initiation;
