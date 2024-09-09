@@ -22,7 +22,7 @@ const Initiation = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const socket: Socket = io('http://localhost:5000');
+    const socket: Socket = io(process.env["BACK_URL"] as string);
 
     socket.on('connect', () => {
       console.log('Connected to Socket.IO server');
