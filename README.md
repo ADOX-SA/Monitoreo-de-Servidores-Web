@@ -1,6 +1,6 @@
 # Arquitectura del Proyecto:
 
-En esta arquitectura, uso la api de Portainer dandome la información de los contenedores del servidor, como se muestra en la imagen. Desde el backend, realizamos consultas para obtener la información necesaria sobre el estado de los servidores, verificando si están activos o caídos. Esta información se refleja en el frontend para su visualización.
+En esta arquitectura, uso la api de Portainer dandome la información de los contenedores del servidor, como se muestra en la imagen. Desde el backend, realizamos consultas para obtener la información necesaria sobre el estado de los servidores, verificando si están activos o si estos estan caidos. Esta información se refleja en el frontend para su visualización.
 
 ![image](image.png)
 
