@@ -14,7 +14,7 @@ env:
   USERNAME: ${{ secrets.USERNAME }}
   KEY: ${{ secrets.KEY }}
   PHRASE: ${{ secrets.PHRASE }}
-  BACK_URL: ${{ secrets.BACK_URL}}
+  NEXT_PUBLIC_BACK_URL: ${{ secrets.NEXT_PUBLIC_BACK_URL}}
 
   # MONGO_URI: ${{ secrets.MONGO_URI }}
 jobs:
@@ -31,7 +31,7 @@ jobs:
       - name: Create .env
         run: |
           touch .env          
-          echo "BACK_URL=${{env.BACK_URL}}" >> .env
+          echo "NEXT_PUBLIC_BACK_URL=${{env.NEXT_PUBLIC_BACK_URL}}" >> .env
           cat .env
         working-directory: ./
       - name: Docker build
