@@ -9,6 +9,8 @@ import { Title } from '../Title';
 import { Container, Icon, Paragraph, Spacer } from '@adoxdesarrollos/designsystem-2';
 import { io, Socket } from 'socket.io-client';
 import { ServersFallen } from '../ServersFallen';
+import dotenv from 'dotenv';
+
 
 type Data = {
   id: string;
@@ -20,9 +22,12 @@ type Data = {
 const Initiation = () => {
   const [data, setData] = useState<Data[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  
   useEffect(() => {
-    const socket: Socket = io(process.env["BACK_URL"] as string);
+    // Carga las variables de entorno
+    dotenv.config();
+    const socket: Socket = io(process.env.NEXT_PUBLIC_BACK_URL as string); // Cambiar esto....
+
 
     socket.on('connect', () => {
       console.log('Connected to Socket.IO server');
